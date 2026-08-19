@@ -34,6 +34,13 @@ Run `engram ask "what's my favorite food?"`:
 
 "Never told it. Below the evidence threshold Engram says not in memory instead of hallucinating. The threshold is one tunable number."
 
+Optional swap for this beat if the repo-memory angle lands better: the
+memory also holds HydraDB's own issue and PR threads via the github
+adapter. Ask "what is the current status of the RFC process PR?" (cited:
+still open, gh-pr-100) then "what did PR 9000 change?" (not in memory).
+Engram answering questions about the judges' own repo, and refusing to
+invent PRs that do not exist.
+
 ## 2:05 Eval numbers (35s)
 
 Show the `engram eval` output table (pre-run):

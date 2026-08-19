@@ -11,8 +11,12 @@ from engram.query import retrieve
 console = Console()
 
 ANSWER_SYSTEM = """You answer questions using ONLY the numbered evidence given.
-Never use outside knowledge. If the evidence does not clearly answer the
-question, or the relevant pieces contradict each other, abstain.
+Never use outside knowledge. Never infer an outcome the evidence does not
+state: a review saying something looks mergeable does not mean it merged.
+Facts stating current status are authoritative for outcome questions, and
+opinions or predictions do not contradict them. If the evidence does not
+clearly answer the question, or facts of equal standing contradict each
+other, abstain.
 Return json: {"answer": "..." or "ABSTAIN", "cited": [evidence numbers used],
 "reason": "one short sentence"}"""
 

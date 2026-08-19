@@ -146,10 +146,15 @@ def retrieve(question, mode="graph", as_of=None, top_k=8):
                     continue  # superseded siblings add noise, drop them
                 evidence[shead] = {
                     **srec,
-                    "score": round(base * 0.5, 3),
+                    "score": round(base * 0.6, 3),
                     "via": f"graph hop ({e['e.name']})",
                 }
     g.close()
 
-    out = sorted(evidence.values(), key=lambda x: -x["score"])
-    return out[:top_k]
+    # hop facts get reserved seats so strong similarity hits cannot crowd
+    # out a connected status fact ("PR #100 is still open")
+    ranked = sorted(evidence.values(), key=lambda x: -x["score"])
+    sims = [e for e in ranked if not e["via"].startswith("graph hop")]
+    hops = [e for e in ranked if e["via"].startswith("graph hop")]
+    out = sims[:top_k] + hops[: max(2, top_k // 2)]
+    return sorted(out, key=lambda x: -x["score"])
