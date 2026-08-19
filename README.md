@@ -6,6 +6,17 @@ Agents forget everything between sessions. Worse, plain vector retrieval remembe
 
 Any agent can bolt this on as its memory layer.
 
+## Who it's for
+
+Open source projects have this problem worst. Decisions live in issue threads nobody rereads, and half of what's written down is no longer true: the build tool changed, the minimum version got bumped, the API was deprecated. Engram gives a project a memory that prefers current truth, cites the thread it learned from, and refuses to invent policy. There's a built-in adapter that turns a repo's issue and PR threads into memory:
+
+```bash
+python scripts/fetch_github.py hydra-db/hydradb --limit 8
+engram ingest --dir data/github_sessions
+engram ask "was the RFC process PR merged?"
+engram ask "who reviewed PR #99 and what was the verdict?"
+```
+
 ## Architecture
 
 ```mermaid
@@ -87,6 +98,20 @@ What the numbers say:
 - Latency is LLM-bound on the free tier (about 55s per answer end to end). Retrieval itself is around a second: one hybrid query to HydraDB cloud plus local Cypher hops.
 
 The abstention gate is one tunable number, `ENGRAM_ABSTAIN_THRESHOLD`. Below it, Engram refuses to answer before the LLM is even called. The sweep in `eval/results.json` shows outcomes at 0.40, 0.55 and 0.70.
+
+## Deploy
+
+The whole stack is two containers: the HydraDB graph node and the Engram web app. On any box with docker:
+
+```bash
+git clone https://github.com/mwihoti/engram && cd engram
+cp .env.example .env            # add your keys
+mkdir -p hydradb-data && printf 'local-development-token-32-bytes' > hydradb-data/auth-token
+docker compose up -d --build
+docker compose exec engram engram ingest   # first run only, builds the memory
+```
+
+The UI is on port 8080. The graph persists in `hydradb-data/`, the id registry and fact log in `data/`, so containers can restart freely. For anything internet-facing, generate a fresh 32 byte auth token instead of the development one and put the app behind TLS.
 
 ## Tests
 

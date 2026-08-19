@@ -11,6 +11,7 @@ console = Console()
 
 REGISTRY = Path("data/.graph_ids.json")
 FACTS_LOG = Path("data/.facts.jsonl")
+PUSHED = Path("data/.pushed.json")
 
 EXTRACT_SYSTEM = """You extract long-term memory facts from a chat session.
 Return a json array. Each item:
@@ -138,7 +139,13 @@ def run_ingest(directory):
                 SUPERSEDE_SYSTEM,
                 f"OLD FACTS:\n{old_block}\n\nNEW FACTS:\n{new_block}",
             )
+            known_old = {p["fact_id"] for p in prior}
             for pair in pairs:
+                # models sometimes invent indexes or ids, drop those pairs
+                if not isinstance(pair.get("new"), int) or not 0 <= pair["new"] < len(facts):
+                    continue
+                if pair.get("old") not in known_old:
+                    continue
                 new_fact = facts[pair["new"]]
                 g.run(
                     "CREATE (a {id: $new})-[:SUPERSEDES]->(b {id: $old})",
@@ -157,15 +164,22 @@ def run_ingest(directory):
             for f in facts:
                 fh.write(json.dumps(f) + "\n")
 
-    if os.environ.get("HYDRA_DB_API_KEY") and new_fact_records:
-        from engram.hydra_client import HydraVectors
+    if os.environ.get("HYDRA_DB_API_KEY"):
+        # push whatever the cloud does not have yet, not just this run's
+        # facts, so an earlier crashed run gets reconciled for free
+        pushed = set(json.loads(PUSHED.read_text())) if PUSHED.exists() else set()
+        unpushed = [f for f in _prior_facts() if f["fact_id"] not in pushed]
+        if unpushed:
+            from engram.hydra_client import HydraVectors
 
-        v = HydraVectors()
-        v.ensure_database()
-        ids = v.push_facts(new_fact_records)
-        console.print(f"pushed {len(ids)} facts to hydradb cloud vectorstore, waiting for indexing")
-        v.wait_indexed(ids)
-        console.print("indexing complete")
+            v = HydraVectors()
+            v.ensure_database()
+            ids = v.push_facts(unpushed)
+            pushed |= {f["fact_id"] for f in unpushed}
+            PUSHED.write_text(json.dumps(sorted(pushed)))
+            console.print(f"pushed {len(unpushed)} facts to hydradb cloud, waiting for indexing")
+            v.wait_indexed(ids)
+            console.print("indexing complete")
     elif new_fact_records:
         console.print("[yellow]no HYDRA_DB_API_KEY, facts kept in local index only[/]")
 

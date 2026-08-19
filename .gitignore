@@ -7,5 +7,6 @@ __pycache__/
 hydradb-data/
 data/.graph_ids.json
 data/.facts.jsonl
+data/.pushed.json
 eval/.progress.jsonl
 .pytest_cache/
