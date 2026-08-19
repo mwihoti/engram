@@ -75,15 +75,30 @@ class HydraVectors:
             }
             for f in facts
         ]
-        resp = self.client.context.ingest(
-            type="memory",
-            database=self.database,
-            collection=self.collection,
-            memories=json.dumps(memories),
-        )
-        data = getattr(resp, "data", resp)
-        items = getattr(data, "results", None) or []
-        return [it.id for it in items if getattr(it, "id", None) and not getattr(it, "error", None)]
+        from hydra_db.errors.content_too_large_error import ContentTooLargeError
+
+        ids, batch = [], 30  # server enforces a per-request token budget
+        i = 0
+        while i < len(memories):
+            chunk = memories[i : i + batch]
+            try:
+                resp = self.client.context.ingest(
+                    type="memory",
+                    database=self.database,
+                    collection=self.collection,
+                    memories=json.dumps(chunk),
+                )
+            except ContentTooLargeError:
+                if batch == 1:
+                    raise
+                batch = max(1, batch // 2)
+                continue
+            data = getattr(resp, "data", resp)
+            items = getattr(data, "results", None) or []
+            ids += [it.id for it in items
+                    if getattr(it, "id", None) and not getattr(it, "error", None)]
+            i += len(chunk)
+        return ids
 
     def wait_indexed(self, source_ids, timeout=300):
         if not source_ids:
