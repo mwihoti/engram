@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>engram</title>
+<style>
+  :root {
+    --bg: #0f1115; --card: #171a21; --line: #262b36;
+    --text: #e8eaf0; --dim: #8b93a5;
+    --ok: #4cc38a; --warn: #e5c07b; --accent: #6b9fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, sans-serif;
+    display: flex; justify-content: center; padding: 48px 16px;
+  }
+  main { width: 100%; max-width: 720px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--dim); margin: 0 0 24px; }
+  form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  input[type=text] {
+    flex: 1; min-width: 260px; background: var(--card); color: var(--text);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 15px;
+  }
+  input[type=date] {
+    background: var(--card); color: var(--dim); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px;
+  }
+  button {
+    background: var(--accent); color: #0b0d12; border: 0; border-radius: 8px;
+    padding: 10px 18px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  button:disabled { opacity: .5; }
+  .modes { display: flex; gap: 14px; color: var(--dim); font-size: 13px; margin-bottom: 24px; }
+  .answer {
+    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--ok);
+    border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; display: none;
+  }
+  .answer.abstained { border-left-color: var(--warn); }
+  .answer .main { font-size: 17px; }
+  .answer .meta { color: var(--dim); font-size: 13px; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; display: none; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--dim); font-weight: 500; }
+  td.score { color: var(--accent); white-space: nowrap; }
+  td.via { color: var(--dim); white-space: nowrap; }
+  .spin { color: var(--dim); display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>engram</h1>
+  <p class="sub">agent memory on HydraDB. Answers from what it remembers, cites the session, abstains when unsure.</p>
+
+  <form id="f">
+    <input type="text" id="q" placeholder="ask about past sessions..." autofocus>
+    <input type="date" id="asof" title="answer as of this date">
+    <button id="go">ask</button>
+  </form>
+  <div class="modes">
+    <label><input type="radio" name="mode" value="graph" checked> graph (supersedes chain)</label>
+    <label><input type="radio" name="mode" value="vector"> vector only (ablation)</label>
+  </div>
+
+  <p class="spin" id="spin">thinking...</p>
+  <div class="answer" id="ans">
+    <div class="main" id="ansText"></div>
+    <div class="meta" id="ansMeta"></div>
+  </div>
+  <table id="ev">
+    <thead><tr><th>score</th><th>fact</th><th>session</th><th>via</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</main>
+<script>
+const f = document.getElementById('f');
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  const asof = document.getElementById('asof').value || null;
+  document.getElementById('go').disabled = true;
+  document.getElementById('spin').style.display = 'block';
+  document.getElementById('ans').style.display = 'none';
+  document.getElementById('ev').style.display = 'none';
+  try {
+    const r = await fetch('/ask', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({question: q, mode: mode, as_of: asof}),
+    });
+    const d = await r.json();
+    const box = document.getElementById('ans');
+    box.classList.toggle('abstained', d.abstained);
+    document.getElementById('ansText').textContent = d.abstained ? 'not in memory' : d.answer;
+    document.getElementById('ansMeta').textContent = d.abstained
+      ? d.reason
+      : 'sources: ' + d.cited.map(c => c.session + ' (' + c.date + ')').join(', ');
+    box.style.display = 'block';
+    const tb = document.querySelector('#ev tbody');
+    tb.innerHTML = '';
+    for (const ev of d.evidence) {
+      const tr = document.createElement('tr');
+      for (const [cls, val] of [['score', ev.score], ['', ev.statement],
+                                 ['', ev.session + ' ' + ev.date], ['via', ev.via]]) {
+        const td = document.createElement('td');
+        td.className = cls; td.textContent = val;
+        tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+    document.getElementById('ev').style.display = d.evidence.length ? 'table' : 'none';
+  } finally {
+    document.getElementById('go').disabled = false;
+    document.getElementById('spin').style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>

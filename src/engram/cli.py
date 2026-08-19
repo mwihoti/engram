@@ -64,6 +64,9 @@ def main():
 
     sub.add_parser("eval", help="run the longmemeval subset")
 
+    p_serve = sub.add_parser("serve", help="web ui on localhost")
+    p_serve.add_argument("--port", type=int, default=8080)
+
     args = parser.parse_args()
 
     try:
@@ -83,6 +86,9 @@ def main():
     elif args.command == "eval":
         from engram.evaluate import run_eval
         run_eval()
+    elif args.command == "serve":
+        from engram.api import serve
+        serve(port=args.port)
     return 0
 
 
