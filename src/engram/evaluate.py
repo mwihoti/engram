@@ -12,6 +12,7 @@ console = Console()
 
 SUBSET = Path("eval/longmemeval_subset.json")
 RESULTS = Path("eval/results.json")
+PROGRESS = Path("eval/.progress.jsonl")
 
 JUDGE_SYSTEM = """You grade an answer against the gold answer for a memory
 benchmark. Meaning matters, wording does not. Return json: {"correct": true/false}"""
@@ -48,15 +49,22 @@ def run_eval():
     questions = json.loads(SUBSET.read_text())
 
     rows = []
+    if PROGRESS.exists():  # resume a crashed run
+        rows = [json.loads(l) for l in PROGRESS.read_text().splitlines() if l]
+        console.print(f"[dim]resuming, {len(rows)} rows already done[/]")
+    done = {(r["question_id"], r["mode"]) for r in rows}
+
     for q in questions:
         prompt = f"Today is {q['question_date']}. {q['question']}"
         for mode in ("graph", "vector"):
+            if (q["question_id"], mode) in done:
+                continue
             t0 = time.time()
             res = answer_question(prompt, mode=mode)
             latency = time.time() - t0
             outcome = _grade(q["question"], q["answer"], res)
             top = res["evidence"][0]["score"] if res["evidence"] else None
-            rows.append({
+            row = {
                 "question_id": q["question_id"],
                 "type": q["question_type"],
                 "mode": mode,
@@ -65,7 +73,10 @@ def run_eval():
                 "latency_s": round(latency, 2),
                 "answer": res["answer"],
                 "expected": q["answer"],
-            })
+            }
+            rows.append(row)
+            with PROGRESS.open("a") as fh:
+                fh.write(json.dumps(row) + "\n")
             console.print(
                 f"[dim]{q['question_id']} {mode}[/] {outcome} ({latency:.1f}s)"
             )

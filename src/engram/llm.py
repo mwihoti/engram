@@ -48,21 +48,29 @@ def chat(system, user, max_tokens=2000):
 
     from openai import OpenAI
 
+    from openai import (
+        APIConnectionError,
+        APITimeoutError,
+        InternalServerError,
+        RateLimitError,
+    )
+
+    kwargs = {"timeout": 90.0, "max_retries": 0}
     if prov == "openrouter":
         client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
-            api_key=os.environ["OPENROUTER_API_KEY"],
+            api_key=os.environ["OPENROUTER_API_KEY"], **kwargs,
         )
     elif prov == "nvidia":
         client = OpenAI(
             base_url="https://integrate.api.nvidia.com/v1",
-            api_key=os.environ["NVIDIA_API_KEY"],
+            api_key=os.environ["NVIDIA_API_KEY"], **kwargs,
         )
     else:
-        client = OpenAI()
+        client = OpenAI(**kwargs)
 
     last = None
-    for attempt in range(4):
+    for attempt in range(5):
         try:
             resp = client.chat.completions.create(
                 model=model,
@@ -73,11 +81,10 @@ def chat(system, user, max_tokens=2000):
                 ],
             )
             return resp.choices[0].message.content
-        except Exception as e:  # free tiers rate limit hard, back off and retry
+        except (RateLimitError, APITimeoutError, APIConnectionError, InternalServerError) as e:
+            # free tiers rate limit and queue hard, back off and retry
             last = e
-            if "429" not in str(e) and "rate" not in str(e).lower():
-                raise
-            time.sleep(5 * (attempt + 1))
+            time.sleep(8 * (attempt + 1))
     raise last
 
 
