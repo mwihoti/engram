@@ -139,10 +139,10 @@ def run_ingest(directory):
         prior.extend(facts)
         new_fact_records.extend(facts)
         _save_registry(reg)
-
-    with FACTS_LOG.open("a") as fh:
-        for f in new_fact_records:
-            fh.write(json.dumps(f) + "\n")
+        # append per session so a crash never desyncs the log from the graph
+        with FACTS_LOG.open("a") as fh:
+            for f in facts:
+                fh.write(json.dumps(f) + "\n")
 
     if os.environ.get("HYDRA_DB_API_KEY") and new_fact_records:
         from engram.hydra_client import HydraVectors

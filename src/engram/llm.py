@@ -81,9 +81,7 @@ def chat(system, user, max_tokens=2000):
     raise last
 
 
-def chat_json(system, user, max_tokens=2000):
-    """Same as chat but the reply must be a json object or array."""
-    text = chat(system, user, max_tokens=max_tokens)
+def _extract_json(text):
     # strip a ```json fence if the model added one
     m = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
     if m:
@@ -91,4 +89,15 @@ def chat_json(system, user, max_tokens=2000):
     start = min(
         (i for i in (text.find("{"), text.find("[")) if i != -1), default=0
     )
-    return json.loads(text[start:])
+    # raw_decode tolerates prose after the json, models love adding that
+    value, _ = json.JSONDecoder().raw_decode(text[start:].strip())
+    return value
+
+
+def chat_json(system, user, max_tokens=2000):
+    """Same as chat but the reply must be a json object or array."""
+    try:
+        return _extract_json(chat(system, user, max_tokens=max_tokens))
+    except (json.JSONDecodeError, ValueError):
+        retry = user + "\n\nReturn ONLY valid json, nothing else."
+        return _extract_json(chat(system, retry, max_tokens=max_tokens))
