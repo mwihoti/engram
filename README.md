@@ -71,9 +71,22 @@ engram ingest --dir data/longmemeval_sessions
 engram eval
 ```
 
-Results land in `eval/results.json`: accuracy per mode (graph vs vector ablation), the abstention breakdown (correct, wrong, right-abstain, wrong-abstain, hallucination), latency, and an abstention gate sweep across thresholds. Numbers from the submission run go here once final.
+Results from the submission run (`eval/results.json`, NVIDIA NIM free tier, llama-3.3-70b):
 
-The abstention gate is one tunable number, `ENGRAM_ABSTAIN_THRESHOLD`. Below it, Engram refuses to answer before the LLM is even called.
+| mode | correct | wrong | right-abstain | wrong-abstain | hallucination |
+|--------|---------|-------|---------------|---------------|---------------|
+| graph | 7 | 2 | 5 | 6 | 0 |
+| vector | 7 | 2 | 5 | 6 | 0 |
+
+What the numbers say:
+
+- **Zero hallucinations in 40 runs.** When Engram lacks the fact, it says so.
+- **5 of 5 abstention questions abstained correctly.** These are LongMemEval's trick questions where the answer is genuinely not in the sessions.
+- The 6 wrong-abstains are the conservative failure mode: extraction summarized away fine-grained details (kept "spent $60 on coffee mugs", dropped the per-mug price), so Engram declined to answer rather than guess. Wrong by silence, never by invention.
+- Graph and vector mode tie on this subset because fact timestamps in evidence let the model often pick the newer fact anyway. The graph's edge shows elsewhere: `--as-of` time travel is impossible in vector mode, and the supersedes walk removes stale facts deterministically instead of hoping the model reads dates (see the Austin/Denver case in Use above, where vector mode ranks the stale city first).
+- Latency is LLM-bound on the free tier (about 55s per answer end to end). Retrieval itself is around a second: one hybrid query to HydraDB cloud plus local Cypher hops.
+
+The abstention gate is one tunable number, `ENGRAM_ABSTAIN_THRESHOLD`. Below it, Engram refuses to answer before the LLM is even called. The sweep in `eval/results.json` shows outcomes at 0.40, 0.55 and 0.70.
 
 ## Tests
 
@@ -87,5 +100,6 @@ Covers the supersedes chain walk, the as-of filter, vector mode returning the st
 
 - Entity linking is naive, exact name match. "my sister" and "Nora" only merge if the extractor names them the same way.
 - Supersede detection is an LLM judgment per session, it can miss subtle contradictions.
+- Extraction favors memorable facts over fine detail, which costs answerable questions (the wrong-abstains in the eval). The prompt now insists on amounts and durations, but detail recall is the main accuracy lever left.
 - The local HydraDB engine speaks a strict OpenCypher subset (integer node ids, one hop write patterns), so ingestion allocates ids from a local registry file.
 - Eval is 20 questions, enough to show the shape, not a leaderboard claim.

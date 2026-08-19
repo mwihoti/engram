@@ -18,8 +18,10 @@ Return a json array. Each item:
  "entities": [{"name": "...", "type": "person|place|org|pet|event|skill|other"}],
  "confidence": 0.0-1.0}
 Rules: only facts worth remembering across sessions (life events, preferences,
-relationships, work, plans). Resolve pronouns. Include the user as an entity
-only when the fact is about them specifically. 3 to 8 facts per session."""
+relationships, work, plans). Keep concrete details: amounts, prices, durations,
+dates, counts. "Spent $60 on 5 mugs" beats "bought mugs". Resolve pronouns.
+Include the user as an entity only when the fact is about them specifically.
+3 to 12 facts per session."""
 
 SUPERSEDE_SYSTEM = """You compare new facts against older ones and spot replacements.
 A new fact supersedes an old fact when both describe the same attribute of the

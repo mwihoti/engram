@@ -1,0 +1,460 @@
+{
+ "summary": {
+  "threshold": 0.55,
+  "modes": {
+   "graph": {
+    "accuracy_answerable": 0.467,
+    "right_abstain_rate": 1.0,
+    "hallucinations": 0,
+    "wrong_abstains": 6,
+    "avg_latency_s": 54.77,
+    "outcomes": {
+     "correct": 7,
+     "wrong": 2,
+     "right-abstain": 5,
+     "wrong-abstain": 6,
+     "hallucination": 0
+    }
+   },
+   "vector": {
+    "accuracy_answerable": 0.467,
+    "right_abstain_rate": 1.0,
+    "hallucinations": 0,
+    "wrong_abstains": 6,
+    "avg_latency_s": 63.69,
+    "outcomes": {
+     "correct": 7,
+     "wrong": 2,
+     "right-abstain": 5,
+     "wrong-abstain": 6,
+     "hallucination": 0
+    }
+   }
+  },
+  "sweep": {
+   "0.4": {
+    "correct": 7,
+    "wrong": 2,
+    "right-abstain": 5,
+    "wrong-abstain": 6,
+    "hallucination": 0
+   },
+   "0.55": {
+    "correct": 7,
+    "wrong": 2,
+    "right-abstain": 5,
+    "wrong-abstain": 6,
+    "hallucination": 0
+   },
+   "0.7": {
+    "correct": 7,
+    "wrong": 2,
+    "right-abstain": 5,
+    "wrong-abstain": 6,
+    "hallucination": 0
+   }
+  }
+ },
+ "rows": [
+  {
+   "question_id": "01493427",
+   "type": "knowledge-update",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 0.995,
+   "latency_s": 27.14,
+   "answer": "25",
+   "expected": "25"
+  },
+  {
+   "question_id": "01493427",
+   "type": "knowledge-update",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.951,
+   "latency_s": 170.17,
+   "answer": "25",
+   "expected": "25"
+  },
+  {
+   "question_id": "031748ae",
+   "type": "knowledge-update",
+   "mode": "graph",
+   "outcome": "wrong",
+   "top_score": 0.981,
+   "latency_s": 40.42,
+   "answer": "5",
+   "expected": "When you just started your new role as Senior Software Engineer, you led 4 engineers. Now, you lead 5 engineers"
+  },
+  {
+   "question_id": "031748ae",
+   "type": "knowledge-update",
+   "mode": "vector",
+   "outcome": "wrong",
+   "top_score": 0.931,
+   "latency_s": 42.3,
+   "answer": "5 now, ABSTAIN how many when just started",
+   "expected": "When you just started your new role as Senior Software Engineer, you led 4 engineers. Now, you lead 5 engineers"
+  },
+  {
+   "question_id": "06db6396",
+   "type": "knowledge-update",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 1.0,
+   "latency_s": 34.0,
+   "answer": "5",
+   "expected": "5"
+  },
+  {
+   "question_id": "06db6396",
+   "type": "knowledge-update",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.945,
+   "latency_s": 163.81,
+   "answer": "5",
+   "expected": "5"
+  },
+  {
+   "question_id": "07741c44",
+   "type": "knowledge-update",
+   "mode": "graph",
+   "outcome": "wrong",
+   "top_score": 0.9,
+   "latency_s": 47.27,
+   "answer": "closet",
+   "expected": "under my bed"
+  },
+  {
+   "question_id": "07741c44",
+   "type": "knowledge-update",
+   "mode": "vector",
+   "outcome": "wrong",
+   "top_score": 0.876,
+   "latency_s": 23.09,
+   "answer": "closet",
+   "expected": "under my bed"
+  },
+  {
+   "question_id": "0100672e",
+   "type": "multi-session",
+   "mode": "graph",
+   "outcome": "wrong-abstain",
+   "top_score": 0.978,
+   "latency_s": 33.63,
+   "answer": null,
+   "expected": "$12"
+  },
+  {
+   "question_id": "0100672e",
+   "type": "multi-session",
+   "mode": "vector",
+   "outcome": "wrong-abstain",
+   "top_score": 0.895,
+   "latency_s": 72.37,
+   "answer": null,
+   "expected": "$12"
+  },
+  {
+   "question_id": "078150f1",
+   "type": "multi-session",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 1.0,
+   "latency_s": 35.12,
+   "answer": "$50",
+   "expected": "$50"
+  },
+  {
+   "question_id": "078150f1",
+   "type": "multi-session",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.91,
+   "latency_s": 108.04,
+   "answer": "$50",
+   "expected": "$50"
+  },
+  {
+   "question_id": "099778bb",
+   "type": "multi-session",
+   "mode": "graph",
+   "outcome": "wrong-abstain",
+   "top_score": 0.909,
+   "latency_s": 45.35,
+   "answer": null,
+   "expected": "20%"
+  },
+  {
+   "question_id": "099778bb",
+   "type": "multi-session",
+   "mode": "vector",
+   "outcome": "wrong-abstain",
+   "top_score": 0.909,
+   "latency_s": 82.33,
+   "answer": null,
+   "expected": "20%"
+  },
+  {
+   "question_id": "09ba9854",
+   "type": "multi-session",
+   "mode": "graph",
+   "outcome": "wrong-abstain",
+   "top_score": 0.951,
+   "latency_s": 35.14,
+   "answer": null,
+   "expected": "$50"
+  },
+  {
+   "question_id": "09ba9854",
+   "type": "multi-session",
+   "mode": "vector",
+   "outcome": "wrong-abstain",
+   "top_score": 0.922,
+   "latency_s": 31.26,
+   "answer": null,
+   "expected": "$50"
+  },
+  {
+   "question_id": "001be529",
+   "type": "single-session-user",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 0.881,
+   "latency_s": 32.58,
+   "answer": "over a year",
+   "expected": "over a year"
+  },
+  {
+   "question_id": "001be529",
+   "type": "single-session-user",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.881,
+   "latency_s": 52.95,
+   "answer": "over a year",
+   "expected": "over a year"
+  },
+  {
+   "question_id": "0862e8bf",
+   "type": "single-session-user",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 0.934,
+   "latency_s": 207.46,
+   "answer": "Luna",
+   "expected": "Luna"
+  },
+  {
+   "question_id": "0862e8bf",
+   "type": "single-session-user",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.834,
+   "latency_s": 33.24,
+   "answer": "Luna",
+   "expected": "Luna"
+  },
+  {
+   "question_id": "118b2229",
+   "type": "single-session-user",
+   "mode": "graph",
+   "outcome": "wrong-abstain",
+   "top_score": 0.894,
+   "latency_s": 28.43,
+   "answer": null,
+   "expected": "45 minutes each way"
+  },
+  {
+   "question_id": "118b2229",
+   "type": "single-session-user",
+   "mode": "vector",
+   "outcome": "wrong-abstain",
+   "top_score": 0.894,
+   "latency_s": 33.59,
+   "answer": null,
+   "expected": "45 minutes each way"
+  },
+  {
+   "question_id": "15745da0",
+   "type": "single-session-user",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 0.922,
+   "latency_s": 32.73,
+   "answer": "3 months",
+   "expected": "three months"
+  },
+  {
+   "question_id": "15745da0",
+   "type": "single-session-user",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.904,
+   "latency_s": 36.6,
+   "answer": "3 months",
+   "expected": "three months"
+  },
+  {
+   "question_id": "5e1b23de",
+   "type": "temporal-reasoning",
+   "mode": "graph",
+   "outcome": "correct",
+   "top_score": 0.879,
+   "latency_s": 149.0,
+   "answer": "3",
+   "expected": 3
+  },
+  {
+   "question_id": "5e1b23de",
+   "type": "temporal-reasoning",
+   "mode": "vector",
+   "outcome": "correct",
+   "top_score": 0.879,
+   "latency_s": 59.86,
+   "answer": "3",
+   "expected": 3
+  },
+  {
+   "question_id": "71017276",
+   "type": "temporal-reasoning",
+   "mode": "graph",
+   "outcome": "wrong-abstain",
+   "top_score": 0.905,
+   "latency_s": 48.57,
+   "answer": null,
+   "expected": 4
+  },
+  {
+   "question_id": "71017276",
+   "type": "temporal-reasoning",
+   "mode": "vector",
+   "outcome": "wrong-abstain",
+   "top_score": 0.878,
+   "latency_s": 128.29,
+   "answer": null,
+   "expected": 4
+  },
+  {
+   "question_id": "71017277",
+   "type": "temporal-reasoning",
+   "mode": "graph",
+   "outcome": "wrong-abstain",
+   "top_score": 0.801,
+   "latency_s": 45.67,
+   "answer": null,
+   "expected": "my aunt"
+  },
+  {
+   "question_id": "71017277",
+   "type": "temporal-reasoning",
+   "mode": "vector",
+   "outcome": "wrong-abstain",
+   "top_score": 0.801,
+   "latency_s": 20.12,
+   "answer": null,
+   "expected": "my aunt"
+  },
+  {
+   "question_id": "0862e8bf_abs",
+   "type": "abstention",
+   "mode": "graph",
+   "outcome": "right-abstain",
+   "top_score": 0.859,
+   "latency_s": 36.73,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "0862e8bf_abs",
+   "type": "abstention",
+   "mode": "vector",
+   "outcome": "right-abstain",
+   "top_score": 0.784,
+   "latency_s": 48.3,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "15745da0_abs",
+   "type": "abstention",
+   "mode": "graph",
+   "outcome": "right-abstain",
+   "top_score": 0.902,
+   "latency_s": 57.91,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "15745da0_abs",
+   "type": "abstention",
+   "mode": "vector",
+   "outcome": "right-abstain",
+   "top_score": 0.902,
+   "latency_s": 54.16,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "19b5f2b3_abs",
+   "type": "abstention",
+   "mode": "graph",
+   "outcome": "right-abstain",
+   "top_score": 0.897,
+   "latency_s": 117.88,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "19b5f2b3_abs",
+   "type": "abstention",
+   "mode": "vector",
+   "outcome": "right-abstain",
+   "top_score": 0.842,
+   "latency_s": 28.27,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "29f2956b_abs",
+   "type": "abstention",
+   "mode": "graph",
+   "outcome": "right-abstain",
+   "top_score": 0.834,
+   "latency_s": 21.03,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "29f2956b_abs",
+   "type": "abstention",
+   "mode": "vector",
+   "outcome": "right-abstain",
+   "top_score": 0.834,
+   "latency_s": 66.14,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "bc8a6e93_abs",
+   "type": "abstention",
+   "mode": "graph",
+   "outcome": "right-abstain",
+   "top_score": 0.88,
+   "latency_s": 19.28,
+   "answer": null,
+   "expected": null
+  },
+  {
+   "question_id": "bc8a6e93_abs",
+   "type": "abstention",
+   "mode": "vector",
+   "outcome": "right-abstain",
+   "top_score": 0.874,
+   "latency_s": 18.99,
+   "answer": null,
+   "expected": null
+  }
+ ]
+}

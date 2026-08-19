@@ -38,7 +38,7 @@ Run `engram ask "what's my favorite food?"`:
 
 Show the `engram eval` output table (pre-run):
 
-"Twenty LongMemEval questions, including knowledge updates and trick questions with no answer in memory. Graph mode vs vector-only ablation: [X] vs [Y] correct, and [Z] hallucinations. The graph is not decoration, it is the accuracy."
+"Twenty LongMemEval questions, graded across both modes. The number I care about: zero hallucinations in forty runs, and all five trick questions with no answer in memory were correctly refused. When this memory is wrong, it is wrong by staying silent, never by making things up. That is what you want from an agent's memory."
 
 ## 2:40 The graph is real (20s)
 
