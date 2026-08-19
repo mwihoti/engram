@@ -1,0 +1,31 @@
+{
+ "id": "gh-pr-97",
+ "date": "2026-08-15",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "AshNicolus opened PR #97: fix: refuse a retried edge write whose metadata payload changed\nwrite_edge_with_vertex_metadata and write_edge_with_full_metadata share the graph-commit-idempotency-v1 record with plain write_edge, which only fingerprints cell_id/edge_type/src/dst. Retrying the same idempotency_key with different vertex or edge properties hit the cached record and returned the old success silently, no error, and the new properties were never written.\n\ncreate_relationship_with_full_metadata already does this right: it fingerprints the metadata with relationship_create_fingerprint and rejects a mismatched retry. This carries that same fingerprint into the commit idempotency record so all three write paths agree.\n\nAdded a regression test that retries both entry points with changed metadata under the same key and checks the original value is still what got stored.\n\nVerified locally: cargo test --lib and --lib --features opencypher pass (204 and 326 tests), clippy clean on default and opencypher feature sets."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] commented: <h3>Greptile Summary</h3>\n\nThe PR binds edge-write idempotency records to metadata payloads while preserving compatibility with records created before fingerprinting.\n- Adds the metadata fingerprint to newly encoded commit-idempotency records.\n- Decodes both legacy seven-field and fingerprinted eight-field records.\n- Rejects changed-metadata retries for new records and adds regression coverage for both metadata entry points.\n\n<h3>Confidence Score: 5/5</h3>\n\nThe PR appears safe to merge.\n\nThe previously reported durable-record compatibility failure is fixed, and no blocking failure remains.\n\n<details><summary><h3>Important Files Changed</h3></summary>\n\n\n\n\n| Filename | Overview |\n|----------|----------|\n| src/codec.rs | Extends commit-idempotency records with payload fingerprints and correctly supports the prior seven-field durable format. |\n| src/shard/write.rs | Computes and consistently persists metadata-aware fingerprints across individual and batched edge-write paths. |\n| src/tests.rs | Covers changed metadata retries and verifies compatibility with durable pre-fingerprint records. |\n\n</details>\n\n\n<details open><summary><h3>Flowchart</h3></summary>\n\n```mermaid\n%%{init: {'theme': ..."
+  },
+  {
+   "role": "user",
+   "content": "openhack-agent[bot] commented: ## \u23da Security Scan Complete\n\n\u2705 **No vulnerabilities detected!**\n\nThis pull request has been scanned and no security issues were found.\n\n[View results on OpenHack](https://app.openhack.com/projects/058c3898-57db-4209-9300-b1eb4166b242/scans/b2b36b25-2240-43af-b1ee-17560a956880)\n\n---"
+  },
+  {
+   "role": "user",
+   "content": "openhack-agent[bot] commented: ## \u23da Security Scan Complete\n\n\u2705 **No vulnerabilities detected!**\n\nThis pull request has been scanned and no security issues were found.\n\n[View results on OpenHack](https://app.openhack.com/projects/058c3898-57db-4209-9300-b1eb4166b242/scans/70ff47e4-8bfc-4530-839c-dbf335451eb2)\n\n---"
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] reviewed (commented): "
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: PR #97 is still open"
+  }
+ ]
+}

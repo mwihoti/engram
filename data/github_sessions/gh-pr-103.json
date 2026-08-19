@@ -1,0 +1,19 @@
+{
+ "id": "gh-pr-103",
+ "date": "2026-08-18",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "AshNicolus opened PR #103: fix: drop null-keyed rows from a distributed inner join\nCloses #96\n\nmerge_distributed_inner_join hashed each leg's join column as a raw QueryValue and probed the other leg's raw value against it. QueryValue::Null derives Eq/Ord, so every null-keyed row on one side landed in the same bucket as every null-keyed row on the other, and the join emitted all of them as matches. In Cypher, as in SQL, null = null is not true, so an inner join on a nullable column must drop null-keyed rows on both sides, not treat them as equal.\n\nThe in-shard join already gets this right (BindingRow::join refuses to join a null binding against anything). Only this distributed merge treated nulls as a valid join key, so the same query could return different rows depending on whether the planner ran it as one shard-local join or as a cross-cell join.\n\nSkips a null key on both sides of both branches (the right-hashed branch and its left-hashed mirror), on both the build side and the probe side.\n\nAdded two tests reproducing the issue's exact repro table, one for each branch (which side ends up hashed depends on which leg has fewer rows). Confirmed both fail with the null check removed and pass with it.\n\nVerified locally: cargo test --lib --features opencypher passes  ..."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] commented: <h3>Greptile Summary</h3>\n\nThe PR fixes distributed inner joins so rows with null join keys are excluded consistently with Cypher semantics and shard-local execution.\n\n- Skips null keys on both build and probe sides of both hash-join branches.\n- Adds regression coverage for hashing either the left or right leg.\n\n<h3>Confidence Score: 5/5</h3>\n\nThe PR appears safe to merge with no actionable defects identified.\n\nThe null checks cover both sides of both hash-join branches, align distributed behavior with shard-local null-key handling, and preserve existing non-null match, ordering, and duplicate semantics.\n\n<details><summary><h3>Important Files Changed</h3></summary>\n\n\n\n\n| Filename | Overview |\n|----------|----------|\n| src/query/coordination.rs | Correctly excludes top-level null join keys in both distributed hash-join branches and tests each cardinality-driven path. |\n\n</details>\n\n\n<!-- greptile_other_comments_section -->\n\n<sub>Reviews (1): Last reviewed commit: [\"fix: drop null-keyed rows from a distrib...\"](https://github.com/hydra-db/hydradb/commit/2465b5523282334a4f76d0c7378104da14d18f93) | [Re-trigger Greptile](https://app.greptile.com/api/retrigger?id=54243557)</sub>"
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: PR #103 is still open"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "gh-issue-105",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "aloktripathi1 opened issue #105: 4 of 5 CLASS_FRESHNESS errors map to opaque BoltError::Backend instead of a retryable Neo.TransientError code\ngraph_error_to_bolt() in src/client/bolt/values.rs has an explicit arm \nonly for GraphError::SnapshotAhead, mapping it to the retryable \nNeo.TransientError.Transaction.BookmarkTimeout code. Every other \nGraphError::SnapshotExpired, SnapshotChanged, QueryStatsSnapshotChanged, \nand ControlWatermarkRegression variant has no arm and falls into the `_` \ncatch-all, which returns an opaque BoltError::Backend(\"internal query \nexecution error\") and logs \"Bolt suppressed internal graph error\".\n\nGraphError::class_index() in src/core/error.rs groups all five of these \nvariants into the same CLASS_FRESHNESS telemetry class (the \"freshness\" \nstring), an exhaustive match with no wildcard, so the codebase's own \ntaxonomy treats them as one family. The Bolt-facing mapping doesn't carry \nthat same discipline through: 4 of the 5 members of that family lose their \nretry semantics at the client boundary.\n\nNeo4j Bolt drivers key automatic-retry behavior off the Neo.TransientError.* \nerror-code namespace specifically. A query that hits any of the 4 \nunmapped variants surfaces to the application as an opaque internal error \ninstead of being transparently retried, even though the underlying \ncondition (an  ..."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #105 is still open"
+  }
+ ]
+}

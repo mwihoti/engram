@@ -1,0 +1,23 @@
+{
+ "id": "gh-issue-101",
+ "date": "2026-08-17",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "areycruzer opened issue #101: Startup exits with raw Os {NotFound}/{IsADirectory} when the auth-token file is missing or a directory \u2014 request: name the attempted path in the error\nWith `CLOUD_PROVIDER=local`, `LOCAL_PATH=/data/graph`, image `ghcr.io/hydra-db/hydradb@sha256:db78309a233be54662db29744047e985a39b51c45a270d1a1f47c31a62cdb709` (source commit `02a40025`), a fresh empty store bootstraps cleanly on macOS/Docker Desktop but on a GitHub `ubuntu-latest` runner the node starts, reaches placement state `fresh`, then exits:\n\n```\nError: Os { code: 21, kind: IsADirectory, message: \"Is a directory\" }\n```\n\nObserved while narrowing (each a separate CI run):\n- `LOCAL_PATH` absent \u2192 fails canonicalize: `UnableToCanonicalize { path: \"/data/graph\" ... NotFound }` \u2014 so the path must pre-exist;\n- `LOCAL_PATH` pre-created (dir, owned by uid 10001 or mode 777) \u2192 placement reaches `fresh`, then `IsADirectory`;\n- the same compose file and image bootstrap from an empty dir without issue on macOS/Docker Desktop, creating `graph/` and `cache/` subtrees itself.\n\nPublic repro: the `engine` job of https://github.com/areycruzer/substrate-friction/blob/main/.github/workflows/hydra-verify.yml (failing runs are public in that repo's Actions history; the job is `continue-on-error` and documents this issue as the cause).\n\nExpected: either bootstrap from an empty `LOCAL_PATH` as on m ..."
+  },
+  {
+   "role": "user",
+   "content": "areycruzer commented: Sharper evidence, from local bisection (all with the digest-pinned image `db78309a\u2026`, full env parity via a compose override that swaps only the mount):\n\n| Filesystem under `/data` | Result |\n|---|---|\n| macOS Docker Desktop bind mount (VirtioFS) | boots, creates `graph/graph/...` + `cache/...` itself |\n| Docker **named volume** (ext4 inside the same Linux VM) | placement reaches `fresh`, then `Error: Os { code: 2, kind: NotFound }` |\n| **Container overlayfs** (`LOCAL_PATH=/tmp/store/graph`, no volume at all) | same `NotFound` |\n| GitHub runner bind mount (original report) | `IsADirectory` / `NotFound` variants |\n\nTwo additional data points:\n- The failing boots write **nothing** into the store \u2014 the tree is exactly what was pre-seeded, so the crash is on a read/metadata op, not a failed write.\n- Pre-seeding the complete directory tree that a successful macOS boot creates (`graph/graph/data/{namespaces,_graph_nodes,_graph_scopes}` + `cache/scopes/default/graphs`, owned by 10001) does **not** help \u2014 same `NotFound`.\n\nNet: on this image the engine cannot cold-start `CLOUD_PROVIDER=local` on any *native* Linux filesystem we tried; macOS appears to work only because VirtioFS translation ..."
+  },
+  {
+   "role": "user",
+   "content": "areycruzer commented: **Correction \u2014 my earlier conclusion was wrong, and strace found the real cause.**\n\nThe engine cold-starts **fine** on every Linux filesystem I previously reported as failing. The last file syscall before every death was:\n\n```\nopenat(AT_FDCWD, \"/var/run/secrets/slatedb-graph/auth-token\", O_RDONLY|O_CLOEXEC) = -1 ENOENT\n```\n\nRoot cause, entirely on my side:\n- Our compose mounts `./secrets/token:/run/secrets/token:ro` with `GRAPH_AUTH_TOKEN_FILE` \u2014 and `secrets/` is **gitignored**, so a CI checkout doesn't have it. Docker bind-mounts the missing host path as an empty **directory**, and the engine dies reading its token with `IsADirectory`.\n- My named-volume repro used a compose override with `volumes: !override`, which **stripped the secrets mount** \u2014 hence `NotFound` at the fallback secrets path.\n- VirtioFS was never the variable; macOS \"worked\" because the file exists locally.\n\nWith the token file provisioned, the same digest boots and serves on ext4 named volumes, overlayfs, and the GitHub runner \u2014 our CI engine job (boot \u2192 Bolt round trip \u2192 wipe \u2192 engine test suite) is now green: https://github.com/areycruzer/substrate-friction/actions/workflows/hydra-verify.yml\n\n**The residual,  ..."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #101 is still open"
+  }
+ ]
+}

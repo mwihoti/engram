@@ -1,0 +1,23 @@
+{
+ "id": "gh-pr-100",
+ "date": "2026-08-17",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "tushar-hydradb opened PR #100: docs: add the RFC process, template, and contributing guide\n## What this adds\n\nA written design process scoped to the decisions that outlive the release that ships them, plus the contributing guide that routes work into it.\n\n- `rfcs/README.md` \u2014 when an RFC is required, the lifecycle, and why status lives in the directory\n- `rfcs/TEMPLATE.md` \u2014 the template, with `Format compatibility` and `openCypher and Bolt conformance` as first-class sections\n- `rfcs/accepted/`, `rfcs/rejected/` \u2014 the two status directories\n- `CONTRIBUTING.md` \u2014 routing table, claiming, PR rules, AI-assisted contribution policy, what we will not merge, what we owe contributors\n- `README.md`, `AGENTS.md` \u2014 wired into the existing layout blocks and documentation table\n\n## The gate is narrow on purpose\n\nThree categories need an RFC: the on-disk or wire format changes; query semantics change or something user-visible is removed; the work runs past a week or spans multiple components and their interaction.\n\nEverything else goes straight to a pull request as it does today. Bug fixes, docs, refactors. Performance work brings a benchmark number rather than a design document.\n\nExpected volume is roughly six documents a year. If `rfcs/` grows much faster than that, the gate is to ..."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] commented: <h3>Greptile Summary</h3>\n\nThis documentation-only PR introduces HydraDB\u2019s RFC lifecycle and template, adds a comprehensive contribution guide, and links both from the repository\u2019s existing documentation surfaces.\n- Defines when RFCs are required and represents proposal status through directory placement.\n- Adds an RFC template covering compatibility, conformance, operations, testing, and rollout.\n- Documents contribution routing, issue claiming, build and review expectations, and AI-assisted contribution policy.\n- Updates README.md and AGENTS.md to expose and distinguish the new RFC process.\n\n<h3>Confidence Score: 4/5</h3>\n\nThe PR appears safe to merge after resolving several non-blocking inconsistencies in its contributor and RFC process documentation.\n\nThe documentation establishes the intended process but gives conflicting instructions for documentation-only issues, broadens one RFC threshold in the routing table, and leaves the superseded RFC status without an authoritative directory representation.\n\n**Files Needing Attention:** CONTRIBUTING.md, rfcs/README.md, rfcs/TEMPLATE.md\n\n<details><summary><h3>Important Files Changed</h3></summary>\n\n\n\n\n| Filename | Overview |\n|--------- ..."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] reviewed (commented): "
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: PR #100 is still open"
+  }
+ ]
+}

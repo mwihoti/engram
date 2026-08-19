@@ -1,0 +1,23 @@
+{
+ "id": "gh-pr-110",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "aetosdios27 opened PR #110: fix(client): surface error class on suppressed query errors\nCloses #107\r\n\r\nBoth `graph_error_to_bolt`'s and `HttpApiError::from_graph_ref`'s catch-all arms mapped every unclassified `GraphError` to the same hardcoded `\"internal query execution error\"` string, so a storage permission failure and a query bug were indistinguishable to a client on either transport.\r\n\r\n`GraphError::class()` (`src/core/error.rs`) already exists for exactly this: a 12-way coarse taxonomy (`storage`, `query`, `contention`, `timeout`, ...) built to be safe to hand to a client without leaking the withheld detail. It was only wired into telemetry, not into either client-facing error path.\r\n\r\nFolded `error.class()` into both fallback messages instead of inventing a second classification:\r\n\r\n- `src/client/bolt/values.rs` \u2014 `BoltError::Backend` fallback\r\n- `src/client/http.rs` \u2014 `HttpApiError` `\"internal\"` fallback\r\n\r\nNo wire framing changes; only the suppressed fallback text gains the class, e.g. `internal query execution error (storage)`.\r\n\r\nAdded one test on each side (`unclassified_graph_error_names_its_class_without_leaking_detail`, in `bolt/tests.rs` and `http/tests.rs`) asserting the class name is present and the withheld detail (`error.to_string()`) is not.\r\n\r\n## ..."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] commented: <h3>Greptile Summary</h3>\n\nThis PR safely exposes the existing bounded `GraphError` class in suppressed HTTP and Bolt fallback messages, allowing clients to distinguish broad backend failure categories without revealing underlying details.\n\n- Adds the coarse class to Bolt backend fallback messages.\n- Adds the same class to HTTP internal-error fallback messages.\n- Adds protocol-specific tests confirming that the class is present and detailed error text remains withheld.\n\n<h3>Confidence Score: 5/5</h3>\n\nThe PR appears safe to merge because it exposes only a stable, bounded error category while continuing to suppress sensitive error details.\n\nBoth protocol adapters consistently append the existing static error-class vocabulary, and the new tests cover the client-visible classification and non-disclosure behavior without introducing wire-format or status-mapping changes.\n\n<details><summary><h3>Important Files Changed</h3></summary>\n\n\n\n\n| Filename | Overview |\n|----------|----------|\n| src/client/bolt/values.rs | Adds a static, bounded error class to the client-visible Bolt fallback while retaining suppression of detailed backend text. |\n| src/client/http.rs | Mirrors the Bolt behavior  ..."
+  },
+  {
+   "role": "user",
+   "content": "openhack-agent[bot] commented: ## \u23da Security Scan Complete\n\n\u2705 **No vulnerabilities detected!**\n\nThis pull request has been scanned and no security issues were found.\n\n[View results on OpenHack](https://app.openhack.com/projects/058c3898-57db-4209-9300-b1eb4166b242/scans/465601c6-b115-4e6e-a225-2d92935748a6)\n\n---"
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: PR #110 is still open"
+  }
+ ]
+}

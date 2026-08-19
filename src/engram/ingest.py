@@ -23,6 +23,16 @@ dates, counts. "Spent $60 on 5 mugs" beats "bought mugs". Resolve pronouns.
 Include the user as an entity only when the fact is about them specifically.
 3 to 12 facts per session."""
 
+GH_EXTRACT_SYSTEM = """You extract project memory facts from a github thread.
+Return a json array. Each item:
+{"statement": "self-contained fact naming the PR/issue number",
+ "entities": [{"name": "...", "type": "person|pr|issue|component|other"}],
+ "confidence": 0.0-1.0}
+Capture: what the PR or issue is about, its outcome (merged, closed, open,
+and when), who opened it, who reviewed and their verdict, decisions made,
+problems reported. Keep numbers, dates and version constraints exact.
+3 to 12 facts per thread."""
+
 SUPERSEDE_SYSTEM = """You compare new facts against older ones and spot replacements.
 A new fact supersedes an old fact when both describe the same attribute of the
 same entity and the new one reflects a later state (moved cities, changed jobs,
@@ -71,7 +81,8 @@ def run_ingest(directory):
             continue
 
         transcript = "\n".join(f"{t['role']}: {t['content']}" for t in session["turns"])
-        facts = chat_json(EXTRACT_SYSTEM, f"Session date: {date}\n\n{transcript}")
+        system = GH_EXTRACT_SYSTEM if session.get("kind") == "github" else EXTRACT_SYSTEM
+        facts = chat_json(system, f"Session date: {date}\n\n{transcript}")
         console.print(f"{sid}: extracted {len(facts)} facts")
 
         session_node = _alloc(reg)

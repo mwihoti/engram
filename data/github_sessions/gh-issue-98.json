@@ -1,0 +1,31 @@
+{
+ "id": "gh-issue-98",
+ "date": "2026-08-16",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "Ansell-OK opened issue #98: Intermittent Bolt result decoding failure with neo4j-driver\n## Summary\n\nHydraDB intermittently causes the Neo4j JavaScript driver to throw RangeError [ERR_OUT_OF_RANGE] while reading a normal Bolt query result. Retrying the identical query often succeeds.\n\n## Environment\n\n- HydraDB repository commit: 6a2fbb1\n- Node.js: 22.19.0\n- \neo4j-driver: 5.28.2\n- Client: JavaScript/TypeScript client using the Bolt endpoint\n\n## Observed error\n\n`\text\nRangeError [ERR_OUT_OF_RANGE]: The value of offset is out of range. It must be >= 0 and <= 3. Received 4\n    at captureStacktrace (.../neo4j-driver-core/lib/result.js:624:17)\n    at new Result (.../neo4j-driver-core/lib/result.js:112:23)\n    at Session._run (.../neo4j-driver-core/lib/session.js:224:16)\n    at Session.run (.../neo4j-driver-core/lib/session.js:188:27)\n`\n\nThe failure is raised while constructing a \neo4j-driver Result, before application rows are returned. In our client it occurred during ordinary MERGE/MATCH writes and cleanup queries while extracting a five-file JavaScript repository into HydraDB. The same query sequence can succeed on the next attempt without changing the query or parameters.\n\n## Impact\n\nThis makes otherwise valid graph extraction and CI checks fail nondeterministically. A cl ..."
+  },
+  {
+   "role": "user",
+   "content": "aetosdios27 commented: thanks for the detailed repro. would love to help track this down.\n\ncould you share the extractor/repository fixture and the client trace? want to reproduce locally against a fresh `graph-node` instance and capture the raw bytes on the wire when it fails, rather than guess from the encoder alone.\n\ndid a pass through `boltr`'s encode path first to rule out the obvious stuff:\n- `ChunkWriter` handles the 65535-byte chunk boundary correctly, including exact multiples, terminator is always appended\n- PackStream `encode.rs` \u2014 every header (`STRING_8/16/32`, `LIST_*`, `DICT_*`, `BYTES_*`) derives its length from the actual payload length, nothing stale or hardcoded\n- struct headers for RECORD/SUCCESS/NODE/RELATIONSHIP/PATH match their declared field counts\n\nso this isn't a static off-by-one in the encoder as far as I can tell. given it's intermittent and tied to a specific bulk workload, my guess is it needs an actual byte-level capture to pin down rather than more code reading. happy to set up a repro harness (loop the same UNWIND/MERGE/SET shape against a local node, tcpdump the Bolt port) once I have the fixture."
+  },
+  {
+   "role": "user",
+   "content": "Ansell-OK commented: Thanks. We tightened the reproduction and can now confirm this is not an application-level Conflict Radar error.\n\nWe reproduced the failure against a fresh HydraDB Docker node using:\n\n- HydraDB: official `ghcr.io/hydra-db/hydradb:latest` image\n- Node.js: `22.19.0`\n- `neo4j-driver`: `5.28.2`\n- Bolt: `bolt://127.0.0.1:17687`\n- Database: `default`\n- Windows 11 host\n\nThe client was a minimal direct Neo4j driver harness with the retry layer disabled. It failed on the first write, before any application rows were returned:\n\n```text\nRangeError [ERR_OUT_OF_RANGE]: The value of \"offset\" is out of range.\nIt must be >= 0 and <= 4. Received 5\n```\n\nThe failing query shape was:\n\n```cypher\nUNWIND $rows AS row\nMERGE (r {id: row.id})\nSET r:Repo, r.name = row.name, r.path = row.path\n```\n\nParameters were one row containing an integer `id`, repository name, and local path. The error was raised while `neo4j-driver` constructed the `Result`, not while decoding an application record.\n\nWe also ran the same retry-free workload successfully for 300 iterations. That control run produced a 645 KB loopback Bolt capture containing the handshake and query/result exchange. The failure is therefore intermittent an ..."
+  },
+  {
+   "role": "user",
+   "content": "Ansell-OK commented: We published the retry-free application trace here:\n\nhttps://gist.github.com/Ansell-OK/2b25f82cea8bf94c284fa9979d0fbd62\n\nThe trace contains the exact query label, elapsed time, query text, parameter keys, and full `RangeError [ERR_OUT_OF_RANGE]` stack.\n\nWe also captured a successful 645 KB loopback Bolt control exchange from the same endpoint/workload family:\n\n```text\nhydradb-issue-98.pcapng\nsize: 645,700 bytes\n```\n\nGitHub gists do not accept binary uploads, so we have not put the `.pcapng` on a public file host without your preference. We can provide it through whatever artifact channel HydraDB prefers.\n\nAt this point we recommend treating the next contribution as a diagnostic/regression PR rather than a speculative encoder fix. We can submit the minimal repeated `UNWIND`/`MERGE` harness, opt-in Bolt frame logging, and assertions around response boundaries/declared field counts as a draft PR if that would be useful. Once the malformed response is identified, we can turn it into a focused fix."
+  },
+  {
+   "role": "user",
+   "content": "aetosdios27 commented: hey, went through the gist before replying more.\n\n`hydradb-issue-98-trace.jsonl` is 900 lines \u2014 300 runs of merge/symbols/read, all clean. 600 writes at `records:0`, 300 reads at `records:16`, no errors anywhere in it, no `error` or `code` field in the schema at all.\n\nthat's the 300x success control run you mentioned earlier, not the trace with the actual `RangeError [ERR_OUT_OF_RANGE]` stack you said this comment had. as posted, there's nothing in the file showing the failure happened.\n\ncan you repost the actual failing trace? right now the only evidence of a real bug is the error text in the original post \u2014 this gist doesn't back it up."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #98 is still open"
+  }
+ ]
+}

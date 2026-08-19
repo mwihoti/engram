@@ -1,0 +1,15 @@
+{
+ "id": "gh-issue-108",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "Techkeyy opened issue #108: Container runs as UID 10001, so Docker named volumes make every write fail with a misleading error\n**Environment:** Docker Compose, HydraDB service with a named volume mounted at the data directory.\n\n### Reproduction\n\n```yaml\nservices:\n  hydradb:\n    image: hydradb:latest\n    volumes:\n      - hydradb-data:/data\nvolumes:\n  hydradb-data:\n```\n\nStart the service, then run any write query.\n\n**Expected:** the write succeeds, or fails with an error naming the cause.\n\n**Actual:** every write fails with `internal query execution error`. Reads succeed normally, which makes it look like a query problem rather than a storage one.\n\n### Cause\n\nThe image runs as UID 10001. Docker creates named volumes root-owned, so the process cannot write to its store directory. The first storage operation of every write fails.\n\n### Why I am filing this separately from the error-suppression issue\n\nThe README documents the permission requirement for **bind mounts**. Named volumes reproduce it identically and are not mentioned, and they are the more common default in a Compose file. Combined with the suppressed error, the first-run experience is that the database appears to accept reads and silently reject all writes with no usable diagnostic.\n\n### Workaround\n\n```yaml\n    user: \"0:0\"\n```\n\n### Suggested resolut ..."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #108 is still open"
+  }
+ ]
+}

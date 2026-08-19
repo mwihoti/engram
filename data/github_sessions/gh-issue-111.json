@@ -1,0 +1,15 @@
+{
+ "id": "gh-issue-111",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "Jennycruzy opened issue #111: RFC: temporal predicates for graph-context retrieval\nBlastline uses HydraDB as the hosted graph layer for bitemporal supply-chain resolution evidence. The current graph-context and source-relation APIs retrieve the relevant graph neighborhood, but the client must apply transaction-time and valid-time interval predicates locally.\\n\\nWe propose optional temporal relation filters supporting: (1) commit-time cutoff, and (2) valid-time interval intersection. This keeps ordinary retrieval unchanged while allowing HydraDB to select the correct historical graph slice server-side.\\n\\nThe complete use case, proposed request shape, response requirements, and reproducible implementation context are documented here:\\nhttps://github.com/Jennycruzy/blastline/blob/main/docs/RFC_HYDRA_TEMPORAL_PREDICATES.md\\n\\nThis is based on HydraDB's published bitemporal edge model and Blastline's 54-repository supply-chain graph. Happy to adapt the proposal to the project's preferred API conventions."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #111 is still open"
+  }
+ ]
+}

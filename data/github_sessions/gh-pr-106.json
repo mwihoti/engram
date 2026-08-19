@@ -1,0 +1,23 @@
+{
+ "id": "gh-pr-106",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "aloktripathi1 opened PR #106: fix(bolt): map 3 reachable freshness errors to retryable transient codes\nCloses #105\n\ngraph_error_to_bolt() only mapped SnapshotAhead to a retryable \nNeo.TransientError code. class_index() groups it with SnapshotExpired, \nSnapshotChanged, QueryStatsSnapshotChanged, and ControlWatermarkRegression \nunder CLASS_FRESHNESS, but the other 4 fell through to an opaque, \nnon-retryable BoltError::Backend.\n\nSnapshotChanged and QueryStatsSnapshotChanged -> Neo.TransientError.Transaction.Outdated\nSnapshotExpired -> Neo.TransientError.Transaction.LeaseExpired (not Outdated -- \nretrying the same stale epoch can't succeed, but a managed-transaction \nretry acquires a fresh one and can)\nControlWatermarkRegression -> left on the catch-all deliberately. It's \ncurrently unreachable (never constructed anywhere in src/ or crates/, \nconfirmed via grep) and describes a control-plane anomaly, not a routine \nconcurrent-write race like its siblings. Full reasoning is in the commit \nmessage.\n\nTest output:\nSnapshotAhead -> BookmarkTimeout (unchanged)\nSnapshotExpired -> LeaseExpired\nSnapshotChanged -> Outdated\nQueryStatsSnapshotChanged -> Outdated\nControlWatermarkRegression -> Backend (unchanged)\n\n40/40 client::bolt tests pass. clippy-client-protocols clean."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] commented: <h3>Greptile Summary</h3>\n\nThe PR adds driver-retryable Bolt classifications for three graph freshness errors while preserving the existing handling of `SnapshotAhead` and `ControlWatermarkRegression`.\n- Maps `SnapshotChanged` and `QueryStatsSnapshotChanged` to `Neo.TransientError.Transaction.Outdated`.\n- Maps `SnapshotExpired` to `Neo.TransientError.Transaction.LeaseExpired`.\n- Adds a table-driven unit test covering all five freshness-family variants.\n\n<h3>Confidence Score: 5/5</h3>\n\nThe PR appears safe to merge with no concrete blocking or independently actionable non-blocking issue identified.\n\nThe new mappings are internally consistent with fresh-epoch read execution, existing behavior remains pinned for the other freshness variants, and no current Bolt path was found that produces an incorrect or unsafe observable result.\n\n<details><summary><h3>Important Files Changed</h3></summary>\n\n\n\n\n| Filename | Overview |\n|----------|----------|\n| src/client/bolt/values.rs | Adds explicit retryable Bolt mappings for three freshness errors; no concrete reachable regression was identified. |\n| src/client/bolt/tests.rs | Adds focused coverage that pins the expected Bolt variant and code for  ..."
+  },
+  {
+   "role": "user",
+   "content": "openhack-agent[bot] commented: ## \u23da Security Scan Complete\n\n\u2705 **No vulnerabilities detected!**\n\nThis pull request has been scanned and no security issues were found.\n\n[View results on OpenHack](https://app.openhack.com/projects/058c3898-57db-4209-9300-b1eb4166b242/scans/e23f3716-5051-4e0d-ad91-e55ec779138d)\n\n---"
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: PR #106 is still open"
+  }
+ ]
+}

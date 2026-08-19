@@ -1,0 +1,23 @@
+{
+ "id": "gh-pr-94",
+ "date": "2026-08-14",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "Agnik47 opened PR #94: fix: report a store that cannot conditionally put at startup\nRefs #81. This implements suggested fix **2** \u2014 detect the missing capability at\nstartup and say so once. It does not implement 1, and 3 is already @areycruzer's\n#87. Reasoning for that split is under *What this does not do*, and I would\nrather you sanity-check the boundary than have me guess wider.\n\n## What the probe is for\n\nSlateDB updates its manifest by compare-and-swap, so a store that answers\n`NotImplemented` to `put_opts` with `PutMode::Update` cannot collect its own\ngarbage. `LocalFileSystem` is such a store, so under `CLOUD_PROVIDER=local`\nevery manifest GC cycle fails and reclaims nothing.\n\nThe part that costs someone a day is that nothing says so. Reads, writes and\n`/readyz` all stay healthy. The only signal is a per-cycle `ERROR` from inside\nSlateDB that first appears **6 min 21 s** into a write load \u2014 once the manifest\nhas grown enough for a GC pass to run \u2014 by which point nobody is still watching\nthe log. Per the issue, it was only found because writes in a different workload\neventually stopped altogether.\n\nSo the node is asked the question at startup, before it has been handed any\ndata, and answers it once:\n\n```\nWARN object store does not implement conditional put, s ..."
+  },
+  {
+   "role": "user",
+   "content": "greptile-apps[bot] commented: <h3>Greptile Summary</h3>\n\nThe PR adds a non-fatal graph-node startup probe that detects object stores lacking conditional-put support and emits a one-time warning about ineffective SlateDB manifest garbage collection.\n- Adds and publicly exports `probe_conditional_put` and `ConditionalPutSupport`.\n- Runs the probe before graph-node database assembly and preserves startup on inconclusive errors.\n- Adds LocalFileSystem, in-memory, and repeated-probe coverage.\n\n<h3>Confidence Score: 5/5</h3>\n\nThe PR appears safe to merge, with no concrete blocking or independently actionable non-blocking issue identified.\n\nThe startup probe uses a fresh unconditional write before testing the conditional update, treats evaluated conflicts as support, reports the known unsupported LocalFileSystem behavior, and leaves startup unaffected by inconclusive diagnostic failures.\n\n<details><summary><h3>Important Files Changed</h3></summary>\n\n\n\n\n| Filename | Overview |\n|----------|----------|\n| src/bin/graph-node.rs | Runs the diagnostic probe once during startup and warns only when unsupported conditional puts are conclusively detected. |\n| src/engine/conditional_put.rs | Implements the write-update-delete cap ..."
+  },
+  {
+   "role": "user",
+   "content": "openhack-agent[bot] commented: ## \u23da Security Scan Complete\n\n\u2705 **No vulnerabilities detected!**\n\nThis pull request has been scanned and no security issues were found.\n\n[View results on OpenHack](https://app.openhack.com/projects/058c3898-57db-4209-9300-b1eb4166b242/scans/3cd0a895-d3b3-4369-ae5a-e73ad7c74aa8)\n\n---"
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: PR #94 is still open"
+  }
+ ]
+}

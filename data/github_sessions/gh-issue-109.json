@@ -1,0 +1,15 @@
+{
+ "id": "gh-issue-109",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "Techkeyy opened issue #109: Docs: variable-length MATCH requires a literal source id, so inbound patterns are always rejected\nThis is a documentation request rather than a bug. The behaviour looks intentional, it just is not written down, and the constraint has real modelling consequences.\n\nFrom `src/shard/query.rs:3976`:\n\n```rust\nlet Some(src) = edge.src.id else {\n    return Err(GraphError::UnsupportedQuery {\n        feature: \"variable-length MATCH requires a fixed source id\",\n    });\n};\n```\n\nTwo consequences that were not obvious to me from the docs:\n\n### 1. Inbound variable-length patterns can never work\n\n```cypher\nMATCH (c {id: 5})<-[:DEPENDS_ON*1..2]-(x) RETURN x.name\n```\n\nThe edge's source is `x`, which has no id, so this is rejected regardless of where the id is placed. There is no arrangement of the pattern that satisfies the requirement.\n\n### 2. A parameter is also rejected\n\nThe id must be a literal in the query text. `$id` works fine for fixed-length patterns, which makes the difference easy to trip over: the same parameter style works in one query shape and not the other.\n\n### Why it matters\n\nFor a dependency graph, \"who depends on X\" is the primary question, and it cannot be answered by reversing the arrow. The reverse edge has to be materialised in the graph. My ingest now writes a `DEPENDED_ ..."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #109 is still open"
+  }
+ ]
+}

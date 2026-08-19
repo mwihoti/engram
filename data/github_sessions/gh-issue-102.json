@@ -1,0 +1,15 @@
+{
+ "id": "gh-issue-102",
+ "date": "2026-08-17",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "areycruzer opened issue #102: Proposal: algo.RecallCert \u2014 certify a selection result against labels, in-engine\n**Motivating consumer.** [substrate-friction](https://github.com/areycruzer/substrate-friction) measures whether graph-based test selection can reach labelled guarding tests (SWE-bench FAIL_TO_PASS as the oracle). Today the verdict is computed client-side: per-source bounded traversals (the dialect's outward-anchored variable-length form) at ~2 ms each, then set intersection and thresholding in the client. The same repo also computes an edge-set anti-join in-engine by reifying edges as nodes (see its `docs/engine-diff.md`) \u2014 the dialect already supports the traversal shapes; what is missing is a one-round-trip certification primitive.\n\n**Proposal.** A procedure:\n\n```\nCALL algo.RecallCert(sourceNodes, labelNodes, relType, maxLen, threshold)\nYIELD reached, total, recall, pass\n```\n\nSemantics: for each label node, is any source node within `maxLen` hops (directed)? `recall = reached/total`; `pass = recall >= threshold`.\n\n**Why in-engine:** any selection tool built on HydraDB could then ship a *measured* safety number instead of an assumed one, in one round trip \u2014 the same argument as the existing `algo.*` procedures. Current client-side workarounds and measured semantics that would nee ..."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #102 is still open"
+  }
+ ]
+}

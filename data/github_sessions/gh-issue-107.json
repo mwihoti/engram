@@ -1,0 +1,19 @@
+{
+ "id": "gh-issue-107",
+ "date": "2026-08-19",
+ "kind": "github",
+ "turns": [
+  {
+   "role": "user",
+   "content": "Techkeyy opened issue #107: Query errors are replaced with \"internal query execution error\" on both transports, so clients cannot diagnose failures\nBuilding a graph application on HydraDB, every failing write returned the same opaque string on the client:\n\n```\ninternal query execution error\n```\n\nThe real cause is logged server-side as `Bolt suppressed internal graph error`, but the client never receives it. Both transports do this:\n\n- `src/client/bolt/values.rs:271`\n- `src/client/http.rs:433`\n\nAny unmatched `GraphError` is mapped to that generic string.\n\n### Why this is costly\n\nI lost several hours to this. Every write in my ingest was failing while reads succeeded. With no error detail, the only hypotheses available were about my Cypher, so I rewrote working queries repeatedly. The actual cause was unrelated to the query (filesystem permissions, filed separately).\n\nThe failure mode is that the message points at the wrong layer. A storage permission error reads as a syntax problem, and there is nothing in the client response to suggest otherwise.\n\n### What helped, once I found it\n\n```bash\ndocker logs $(docker ps --filter name=hydradb --format '{{.Names}}' | head -1) --tail 60\n```\n\n### Suggested resolutions\n\nIn rough order of preference:\n\n1. Return the `GraphError` variant name to the client even when the detail is withheld. `s ..."
+  },
+  {
+   "role": "user",
+   "content": "aetosdios27 commented: started poking at this one. good write-up, easy to act on.\n\nturns out there's already a `GraphError::class()` method (`src/core/error.rs`) that returns a coarse category \u2014 \"storage\", \"query\", \"contention\", \"timeout\", etc, 12 of them total. it's built for exactly this: safe to hand to a client, doesn't leak the actual detail. right now it's only wired into telemetry, not into either client-facing error path.\n\nso the fix is small: in the catch-all arms of `graph_error_to_bolt` (`src/client/bolt/values.rs`) and `HttpApiError::from_graph_ref` (`src/client/http.rs`), swap the hardcoded `\"internal query execution error\"` string for one that includes `error.class()`. no wire framing changes, no new types, just the fallback message.\n\nworking on a PR for this now. wanted to comment first in case there's a reason this wasn't already done, or a preferred error format (thinking `internal query execution error (storage)`, happy to change the shape)."
+  },
+  {
+   "role": "user",
+   "content": "OUTCOME: issue #107 is still open"
+  }
+ ]
+}
