@@ -149,9 +149,9 @@ def run_ingest(directory):
 
         v = HydraVectors()
         v.ensure_database()
-        v.push_facts(new_fact_records)
-        console.print("pushed facts to hydradb cloud vectorstore, waiting for indexing")
-        v.wait_indexed()
+        ids = v.push_facts(new_fact_records)
+        console.print(f"pushed {len(ids)} facts to hydradb cloud vectorstore, waiting for indexing")
+        v.wait_indexed(ids)
         console.print("indexing complete")
     elif new_fact_records:
         console.print("[yellow]no HYDRA_DB_API_KEY, facts kept in local index only[/]")

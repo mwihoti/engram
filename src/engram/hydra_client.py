@@ -53,11 +53,12 @@ class HydraVectors:
         self.collection = collection
 
     def ensure_database(self):
-        existing = self.client.databases.list()
-        names = [d.get("database") if isinstance(d, dict) else getattr(d, "database", None)
-                 for d in getattr(existing, "databases", existing) or []]
-        if self.database not in names:
+        from hydra_db.errors.conflict_error import ConflictError
+
+        try:
             self.client.databases.create(database=self.database)
+        except ConflictError:
+            pass  # already exists, which is what we want
 
     def push_facts(self, facts):
         # facts: [{fact_id, statement, session_id, date}]
@@ -74,50 +75,52 @@ class HydraVectors:
             }
             for f in facts
         ]
-        return self.client.context.ingest(
+        resp = self.client.context.ingest(
             type="memory",
             database=self.database,
             collection=self.collection,
             memories=json.dumps(memories),
         )
+        data = getattr(resp, "data", resp)
+        items = getattr(data, "results", None) or []
+        return [it.id for it in items if getattr(it, "id", None) and not getattr(it, "error", None)]
 
-    def wait_indexed(self, timeout=120):
+    def wait_indexed(self, source_ids, timeout=300):
+        if not source_ids:
+            return True
         start = time.time()
         while time.time() - start < timeout:
-            status = self.client.context.status(database=self.database)
-            state = getattr(status, "indexing_status", None) or (
-                status.get("indexing_status") if isinstance(status, dict) else None
-            )
-            if state == "completed":
+            resp = self.client.context.status(database=self.database, ids=source_ids)
+            data = getattr(resp, "data", resp)
+            statuses = [getattr(s, "status", None) for s in getattr(data, "statuses", None) or []]
+            if statuses and all(s == "completed" for s in statuses):
                 return True
-            time.sleep(3)
+            if any(s == "failed" for s in statuses):
+                raise RuntimeError(f"hydradb indexing failed: {statuses}")
+            time.sleep(5)
         raise TimeoutError("hydradb indexing did not complete in time")
 
     def search(self, query, top_k=8):
         res = self.client.query(
             database=self.database,
+            collection=self.collection,
             query=query,
             type="memory",
             query_by="hybrid",
             mode="fast",
+            max_results=top_k,
         )
-        return self._normalize(res)[:top_k]
-
-    @staticmethod
-    def _normalize(res):
-        raw = res if isinstance(res, (list, dict)) else res.__dict__
-        items = raw.get("results", raw) if isinstance(raw, dict) else raw
+        chunks = getattr(getattr(res, "data", res), "chunks", None) or []
         out = []
-        for it in items or []:
-            d = it if isinstance(it, dict) else it.__dict__
-            meta = d.get("additional_metadata") or d.get("metadata") or {}
+        for c in chunks:
+            meta = getattr(c, "additional_metadata", None) or {}
             out.append(
                 {
-                    "text": d.get("text") or d.get("content") or "",
-                    "score": d.get("score") or d.get("relevance") or 0.0,
+                    "text": getattr(c, "chunk_content", ""),
+                    "score": round(getattr(c, "relevancy_score", 0.0) or 0.0, 3),
                     "fact_id": meta.get("fact_id"),
                     "session_id": meta.get("session_id"),
                     "date": meta.get("date"),
                 }
             )
-        return out
+        return out[:top_k]
