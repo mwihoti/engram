@@ -1,0 +1,15 @@
+[project]
+name = "engram"
+version = "0.1.0"
+description = "Long-term memory for AI agents on HydraDB. Answers from memory with citations, abstains when it should."
+requires-python = ">=3.11"
+
+[project.scripts]
+engram = "engram.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
