@@ -17,7 +17,7 @@ def _bolt_auth(token):
 
 class HydraGraph:
     def __init__(self, uri=None, token=None):
-        self.uri = uri or os.environ.get("HYDRA_BOLT_URI", "neo4j://127.0.0.1:7687")
+        self.uri = uri or os.environ.get("HYDRA_BOLT_URI", "bolt://127.0.0.1:7687")
         self.token = token or os.environ.get(
             "HYDRA_BOLT_TOKEN", "local-development-token-32-bytes"
         )
