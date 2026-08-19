@@ -2,7 +2,7 @@
 # Local HydraDB graph node. Bolt on 7687, http on 8443.
 set -euo pipefail
 
-mkdir -p hydradb-data
+mkdir -p hydradb-data/store hydradb-data/cache
 printf 'local-development-token-32-bytes' > hydradb-data/auth-token
 
 docker run --rm \
