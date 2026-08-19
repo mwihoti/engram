@@ -1,0 +1,210 @@
+[
+ {
+  "question_id": "01493427",
+  "question_type": "knowledge-update",
+  "question": "How many new postcards have I added to my collection since I started collecting again?",
+  "answer": "25",
+  "question_date": "2023-12-20",
+  "sessions": [
+   "answer_a7b44747_1",
+   "answer_a7b44747_2"
+  ]
+ },
+ {
+  "question_id": "031748ae",
+  "question_type": "knowledge-update",
+  "question": "How many engineers do I lead when I just started my new role as Senior Software Engineer? How many engineers do I lead now?",
+  "answer": "When you just started your new role as Senior Software Engineer, you led 4 engineers. Now, you lead 5 engineers",
+  "question_date": "2023-10-31",
+  "sessions": [
+   "answer_8748f791_1",
+   "answer_8748f791_2"
+  ]
+ },
+ {
+  "question_id": "06db6396",
+  "question_type": "knowledge-update",
+  "question": "How many projects have I completed since starting painting classes?",
+  "answer": "5",
+  "question_date": "2023-10-20",
+  "sessions": [
+   "answer_da72b1b4_1",
+   "answer_da72b1b4_2"
+  ]
+ },
+ {
+  "question_id": "07741c44",
+  "question_type": "knowledge-update",
+  "question": "Where do I initially keep my old sneakers?",
+  "answer": "under my bed",
+  "question_date": "2023-11-30",
+  "sessions": [
+   "answer_7e9ad7b4_1",
+   "answer_7e9ad7b4_2"
+  ]
+ },
+ {
+  "question_id": "0100672e",
+  "question_type": "multi-session",
+  "question": "How much did I spend on each coffee mug for my coworkers?",
+  "answer": "$12",
+  "question_date": "2023-05-27",
+  "sessions": [
+   "answer_35c9798c_1",
+   "answer_35c9798c_2"
+  ]
+ },
+ {
+  "question_id": "078150f1",
+  "question_type": "multi-session",
+  "question": "How much more money did I raise than my initial goal in the charity cycling event?",
+  "answer": "$50",
+  "question_date": "2023-05-28",
+  "sessions": [
+   "answer_254d8b09_1",
+   "answer_254d8b09_2"
+  ]
+ },
+ {
+  "question_id": "099778bb",
+  "question_type": "multi-session",
+  "question": "What percentage of leadership positions do women hold in the my company?",
+  "answer": "20%",
+  "question_date": "2023-05-25",
+  "sessions": [
+   "answer_80d6d664_1",
+   "answer_80d6d664_2"
+  ]
+ },
+ {
+  "question_id": "09ba9854",
+  "question_type": "multi-session",
+  "question": "How much will I save by taking the train from the airport to my hotel instead of a taxi?",
+  "answer": "$50",
+  "question_date": "2023-05-26",
+  "sessions": [
+   "answer_96c743d0_2",
+   "answer_96c743d0_1"
+  ]
+ },
+ {
+  "question_id": "001be529",
+  "question_type": "single-session-user",
+  "question": "How long did I wait for the decision on my asylum application?",
+  "answer": "over a year",
+  "question_date": "2023-05-28",
+  "sessions": [
+   "answer_530960c1"
+  ]
+ },
+ {
+  "question_id": "0862e8bf",
+  "question_type": "single-session-user",
+  "question": "What is the name of my cat?",
+  "answer": "Luna",
+  "question_date": "2023-05-28",
+  "sessions": [
+   "answer_c6fd8ebd"
+  ]
+ },
+ {
+  "question_id": "118b2229",
+  "question_type": "single-session-user",
+  "question": "How long is my daily commute to work?",
+  "answer": "45 minutes each way",
+  "question_date": "2023-05-30",
+  "sessions": [
+   "answer_40a90d51"
+  ]
+ },
+ {
+  "question_id": "15745da0",
+  "question_type": "single-session-user",
+  "question": "How long have I been collecting vintage cameras?",
+  "answer": "three months",
+  "question_date": "2023-05-25",
+  "sessions": [
+   "answer_586de428"
+  ]
+ },
+ {
+  "question_id": "5e1b23de",
+  "question_type": "temporal-reasoning",
+  "question": "How many months ago did I attend the photography workshop?",
+  "answer": 3,
+  "question_date": "2024-02-01",
+  "sessions": [
+   "answer_c18d480b_1"
+  ]
+ },
+ {
+  "question_id": "71017276",
+  "question_type": "temporal-reasoning",
+  "question": "How many weeks ago did I meet up with my aunt and receive the crystal chandelier?",
+  "answer": 4,
+  "question_date": "2023-04-01",
+  "sessions": [
+   "answer_0b4a8adc_1"
+  ]
+ },
+ {
+  "question_id": "71017277",
+  "question_type": "temporal-reasoning",
+  "question": "I received a piece of jewelry last Saturday from whom?",
+  "answer": "my aunt",
+  "question_date": "2023-03-09",
+  "sessions": [
+   "answer_0b4a8adc_1"
+  ]
+ },
+ {
+  "question_id": "0862e8bf_abs",
+  "question_type": "abstention",
+  "question": "What is the name of my hamster?",
+  "answer": null,
+  "question_date": "2023-05-22",
+  "sessions": [
+   "answer_c6fd8ebd_abs"
+  ]
+ },
+ {
+  "question_id": "15745da0_abs",
+  "question_type": "abstention",
+  "question": "How long have I been collecting vintage films?",
+  "answer": null,
+  "question_date": "2023-05-24",
+  "sessions": [
+   "answer_586de428_abs"
+  ]
+ },
+ {
+  "question_id": "19b5f2b3_abs",
+  "question_type": "abstention",
+  "question": "How long was I in Korea for?",
+  "answer": null,
+  "question_date": "2023-05-27",
+  "sessions": [
+   "answer_5ff494b9_abs"
+  ]
+ },
+ {
+  "question_id": "29f2956b_abs",
+  "question_type": "abstention",
+  "question": "How much time do I dedicate to practicing violin every day?",
+  "answer": null,
+  "question_date": "2023-05-29",
+  "sessions": [
+   "answer_7cc5362f_abs"
+  ]
+ },
+ {
+  "question_id": "bc8a6e93_abs",
+  "question_type": "abstention",
+  "question": "What did I bake for my uncle's birthday party?",
+  "answer": null,
+  "question_date": "2023-05-30",
+  "sessions": [
+   "answer_e6143162_abs"
+  ]
+ }
+]
