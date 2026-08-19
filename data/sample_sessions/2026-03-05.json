@@ -1,0 +1,11 @@
+{
+  "id": "s-2026-03-05",
+  "date": "2026-03-05",
+  "turns": [
+    {"role": "user", "content": "Hey, I just moved into my new place in Austin last weekend. Still surrounded by boxes."},
+    {"role": "assistant", "content": "Congrats on the move! How are you settling into Austin so far?"},
+    {"role": "user", "content": "Pretty good. My dog Biscuit is confused by the new backyard but he'll adjust. Also work is busy, we're migrating a warehouse at Meridian Labs and I'm the only data engineer on it."},
+    {"role": "assistant", "content": "Sounds hectic. What's the migration target?"},
+    {"role": "user", "content": "Snowflake to ClickHouse. My manager Priya thinks we can cut costs by half. I'm skeptical but we'll see."}
+  ]
+}

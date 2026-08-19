@@ -1,0 +1,11 @@
+{
+  "id": "s-2026-07-22",
+  "date": "2026-07-22",
+  "turns": [
+    {"role": "user", "content": "Big life update: I took a staff data engineer role at a startup called Northwind Grid and relocated to Denver two weeks ago."},
+    {"role": "assistant", "content": "That's a big change, congratulations. How was leaving Meridian Labs?"},
+    {"role": "user", "content": "Bittersweet. Priya tried to counter but the Denver offer was too good. Biscuit loves the trails here already."},
+    {"role": "assistant", "content": "And the half marathon plans, still on?"},
+    {"role": "user", "content": "Switched my registration to the Denver half in September instead. Nora is still coming. Also started learning Rust for the new job, we do a lot of systems work."}
+  ]
+}

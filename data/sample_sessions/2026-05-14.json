@@ -1,0 +1,11 @@
+{
+  "id": "s-2026-05-14",
+  "date": "2026-05-14",
+  "turns": [
+    {"role": "user", "content": "Good news, the ClickHouse migration shipped and I got promoted to senior data engineer!"},
+    {"role": "assistant", "content": "That's great news, congratulations! Did the cost projections hold up?"},
+    {"role": "user", "content": "Mostly. We're at about 40% savings, Priya is happy. In other news I signed up for the Austin half marathon in October. Training starts next week."},
+    {"role": "assistant", "content": "Nice goal. Have you run one before?"},
+    {"role": "user", "content": "Never. Longest I've done is 10k. My sister Nora is flying in to run it with me, she's done three."}
+  ]
+}

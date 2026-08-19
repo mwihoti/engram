@@ -5,4 +5,6 @@ __pycache__/
 *.pyc
 *.egg-info/
 hydradb-data/
+data/.graph_ids.json
+data/.facts.jsonl
 .pytest_cache/
