@@ -4,6 +4,7 @@ Anthropic first, then OpenAI, then OpenRouter."""
 import json
 import os
 import re
+import time
 
 
 def provider():
@@ -13,8 +14,11 @@ def provider():
         return "openai"
     if os.environ.get("OPENROUTER_API_KEY"):
         return "openrouter"
+    if os.environ.get("NVIDIA_API_KEY"):
+        return "nvidia"
     raise RuntimeError(
-        "no LLM key found, set ANTHROPIC_API_KEY or OPENAI_API_KEY or OPENROUTER_API_KEY"
+        "no LLM key found, set ANTHROPIC_API_KEY, OPENAI_API_KEY, "
+        "OPENROUTER_API_KEY or NVIDIA_API_KEY"
     )
 
 
@@ -22,6 +26,7 @@ DEFAULT_MODELS = {
     "anthropic": "claude-sonnet-5",
     "openai": "gpt-4o-mini",
     "openrouter": "anthropic/claude-sonnet-4.5",
+    "nvidia": "meta/llama-3.3-70b-instruct",
 }
 
 
@@ -48,17 +53,32 @@ def chat(system, user, max_tokens=2000):
             base_url="https://openrouter.ai/api/v1",
             api_key=os.environ["OPENROUTER_API_KEY"],
         )
+    elif prov == "nvidia":
+        client = OpenAI(
+            base_url="https://integrate.api.nvidia.com/v1",
+            api_key=os.environ["NVIDIA_API_KEY"],
+        )
     else:
         client = OpenAI()
-    resp = client.chat.completions.create(
-        model=model,
-        max_tokens=max_tokens,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user", "content": user},
-        ],
-    )
-    return resp.choices[0].message.content
+
+    last = None
+    for attempt in range(4):
+        try:
+            resp = client.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+            )
+            return resp.choices[0].message.content
+        except Exception as e:  # free tiers rate limit hard, back off and retry
+            last = e
+            if "429" not in str(e) and "rate" not in str(e).lower():
+                raise
+            time.sleep(5 * (attempt + 1))
+    raise last
 
 
 def chat_json(system, user, max_tokens=2000):
