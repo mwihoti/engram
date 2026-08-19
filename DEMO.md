@@ -14,7 +14,9 @@ Run `engram ingest`. Narrate while it streams:
 
 ## 0:55 The stale fact moment (45s)
 
-Run `engram ask "where do I live?" --mode vector` first:
+Switch to the web ui (`engram serve`, localhost:8080) or stay in the
+terminal, whichever records better. Ask "where do I live?" in vector
+mode first:
 
 "Vector mode, similarity only. It retrieves the Austin fact. Confidently wrong, this is what most RAG memory does today."
 

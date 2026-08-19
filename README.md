@@ -46,7 +46,7 @@ engram smoke    # proves cypher write/update/read/delete works
 ```
 
 Keys in `.env`:
-- one LLM key, any of `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`
+- one LLM key, any of `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `NVIDIA_API_KEY` (free at build.nvidia.com)
 - `HYDRA_DB_API_KEY` from app.hydradb.com for the hybrid vectorstore. Without it Engram falls back to a small local BM25 over the fact log, clearly not the real thing, but the repo stays runnable.
 
 ## Use
@@ -58,6 +58,7 @@ engram ask "where do I live?" --mode vector   # the stale austin answer
 engram ask "where do I live?"                 # graph mode follows SUPERSEDES to denver
 engram ask "where do I live?" --as-of 2026-05-01   # time travel: austin again
 engram ask "what's my favorite food?"  # not in memory
+engram serve                           # same thing in a browser, localhost:8080
 ```
 
 ## Eval
