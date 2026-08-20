@@ -47,6 +47,11 @@
   td.score { color: var(--accent); white-space: nowrap; }
   td.via { color: var(--dim); white-space: nowrap; }
   .spin { color: var(--dim); display: none; }
+  input[type=date].active { border-color: var(--warn); color: var(--warn); }
+  .asof-note {
+    display: none; color: var(--warn); font-size: 13px; margin: -14px 0 20px;
+  }
+  .asof-note a { color: var(--warn); }
 </style>
 </head>
 <body>
@@ -64,6 +69,9 @@
     <label><input type="radio" name="mode" value="vector"> vector only (ablation)</label>
   </div>
 
+  <p class="asof-note" id="asofNote">time travel on: answering as of <b id="asofDate"></b>.
+    <a href="#" id="asofClear">clear</a> to use current memory</p>
+
   <p class="spin" id="spin">thinking...</p>
   <div class="answer" id="ans">
     <div class="main" id="ansText"></div>
@@ -75,6 +83,19 @@
   </table>
 </main>
 <script>
+const asof = document.getElementById('asof');
+const note = document.getElementById('asofNote');
+function syncAsof() {
+  asof.classList.toggle('active', !!asof.value);
+  note.style.display = asof.value ? 'block' : 'none';
+  document.getElementById('asofDate').textContent = asof.value;
+}
+asof.addEventListener('change', syncAsof);
+document.getElementById('asofClear').addEventListener('click', (e) => {
+  e.preventDefault(); asof.value = ''; syncAsof();
+});
+syncAsof();
+
 const f = document.getElementById('f');
 f.addEventListener('submit', async (e) => {
   e.preventDefault();
