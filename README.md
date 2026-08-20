@@ -101,6 +101,8 @@ The abstention gate is one tunable number, `ENGRAM_ABSTAIN_THRESHOLD`. Below it,
 
 ## Deploy
 
+Live instance during judging: http://102.133.227.173:8080
+
 The whole stack is two containers: the HydraDB graph node and the Engram web app. On any box with docker:
 
 ```bash
