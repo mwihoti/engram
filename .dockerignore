@@ -1,0 +1,6 @@
+venv/
+hydradb-data/
+.git/
+.env
+__pycache__/
+*.egg-info/
