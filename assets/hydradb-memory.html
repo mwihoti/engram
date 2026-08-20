@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>engram memory: hydra-db/hydradb</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --grid: #e8e7e3;
+  --issue: #2a78d6; --pr: #eb6834;
+}
+@media (prefers-color-scheme: dark) {
+  .viz-root {
+    color-scheme: dark;
+    --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --grid: #33322f;
+    --issue: #3987e5; --pr: #d95926;
+  }
+}
+body { margin: 0; background: var(--surface); }
+.viz-root { max-width: 780px; margin: 0 auto; padding: 36px 20px 48px;
+  background: var(--surface); color: var(--ink);
+  font: 14px/1.45 system-ui, sans-serif; }
+h1 { font-size: 19px; margin: 0 0 2px; }
+.sub { color: var(--ink-2); margin: 0 0 22px; }
+.stats { display: flex; gap: 34px; margin: 0 0 30px; }
+.stats b { display: block; font-size: 26px; font-weight: 650; }
+.stats span { color: var(--ink-2); font-size: 13px; }
+h2 { font-size: 14px; font-weight: 600; margin: 26px 0 4px; }
+.legend { display: flex; gap: 18px; color: var(--ink-2); font-size: 12.5px; margin: 0 0 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+.s-issue { fill: var(--issue); } .s-pr { fill: var(--pr); }
+.lbl { fill: var(--ink-2); font-size: 12px; }
+.val { fill: var(--ink-2); font-size: 11.5px; }
+svg { display: block; }
+path[data-tip]:hover { opacity: .82; }
+#tip { position: fixed; display: none; background: var(--ink); color: var(--surface);
+  padding: 5px 9px; border-radius: 6px; font-size: 12.5px; pointer-events: none; z-index: 9; }
+details { margin-top: 26px; color: var(--ink-2); }
+table { border-collapse: collapse; margin-top: 8px; }
+td, th { border-bottom: 1px solid var(--grid); padding: 4px 14px 4px 0; text-align: left; font-size: 12.5px; }
+</style></head>
+<body><div class="viz-root">
+<h1>What Engram remembers about hydra-db/hydradb</h1>
+<p class="sub">116 facts extracted from the 16 most recently active threads, all currently open</p>
+
+<div class="stats">
+  <div><b>116</b><span>facts in the graph</span></div>
+  <div><b>16</b><span>threads (8 PRs, 8 issues)</span></div>
+  <div><b>10</b><span>contributors</span></div>
+</div>
+
+<h2>Threads opened per contributor</h2>
+<div class="legend"><span><i style="background:var(--issue)"></i>issues</span><span><i style="background:var(--pr)"></i>pull requests</span></div>
+<svg viewBox="0 0 700 308" width="100%" role="img" aria-label="threads opened per contributor">
+<text x="132" y="19" text-anchor="end" class="lbl">Techkeyy</text>
+<path d="M140,8 h404.0 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-404.0 z" class="s-issue" data-tip="Techkeyy: 3 issues"/>
+<text x="556.0" y="19" class="val">3</text>
+<text x="132" y="49" text-anchor="end" class="lbl">AshNicolus</text>
+<path d="M140,38 h404.0 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-404.0 z" class="s-pr" data-tip="AshNicolus: 3 prs"/>
+<text x="556.0" y="49" class="val">3</text>
+<text x="132" y="79" text-anchor="end" class="lbl">areycruzer</text>
+<path d="M140,68 h267.3333333333333 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-267.3333333333333 z" class="s-issue" data-tip="areycruzer: 2 issues"/>
+<text x="419.3333333333333" y="79" class="val">2</text>
+<text x="132" y="109" text-anchor="end" class="lbl">aloktripathi1</text>
+<path d="M140,98 h134.66666666666666 v14 h-134.66666666666666 z" class="s-issue" data-tip="aloktripathi1: 1 issue"/>
+<path d="M276.66666666666663,98 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-pr" data-tip="aloktripathi1: 1 pr"/>
+<text x="419.33333333333326" y="109" class="val">2</text>
+<text x="132" y="139" text-anchor="end" class="lbl">Jennycruzy</text>
+<path d="M140,128 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-issue" data-tip="Jennycruzy: 1 issue"/>
+<text x="282.66666666666663" y="139" class="val">1</text>
+<text x="132" y="169" text-anchor="end" class="lbl">Ansell-OK</text>
+<path d="M140,158 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-issue" data-tip="Ansell-OK: 1 issue"/>
+<text x="282.66666666666663" y="169" class="val">1</text>
+<text x="132" y="199" text-anchor="end" class="lbl">tushar-hydradb</text>
+<path d="M140,188 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-pr" data-tip="tushar-hydradb: 1 pr"/>
+<text x="282.66666666666663" y="199" class="val">1</text>
+<text x="132" y="229" text-anchor="end" class="lbl">dependabot[bot]</text>
+<path d="M140,218 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-pr" data-tip="dependabot[bot]: 1 pr"/>
+<text x="282.66666666666663" y="229" class="val">1</text>
+<text x="132" y="259" text-anchor="end" class="lbl">aetosdios27</text>
+<path d="M140,248 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-pr" data-tip="aetosdios27: 1 pr"/>
+<text x="282.66666666666663" y="259" class="val">1</text>
+<text x="132" y="289" text-anchor="end" class="lbl">Agnik47</text>
+<path d="M140,278 h130.66666666666666 a4,4 0 0 1 4,4 v6 a4,4 0 0 1 -4,4 h-130.66666666666666 z" class="s-pr" data-tip="Agnik47: 1 pr"/>
+<text x="282.66666666666663" y="289" class="val">1</text>
+</svg>
+
+<h2>Memory density: facts per thread</h2>
+<svg viewBox="0 0 700 392" width="100%" role="img" aria-label="facts extracted per thread">
+<text x="132" y="17" text-anchor="end" class="lbl">PR #99</text>
+<path d="M140,7 h404.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-404.0 z" class="s-pr" data-tip="gh-pr-99: 10 facts"/>
+<text x="556.0" y="17" class="val">10</text>
+<text x="132" y="41" text-anchor="end" class="lbl">issue #98</text>
+<path d="M140,31 h363.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-363.0 z" class="s-issue" data-tip="gh-issue-98: 9 facts"/>
+<text x="515.0" y="41" class="val">9</text>
+<text x="132" y="65" text-anchor="end" class="lbl">PR #103</text>
+<path d="M140,55 h363.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-363.0 z" class="s-pr" data-tip="gh-pr-103: 9 facts"/>
+<text x="515.0" y="65" class="val">9</text>
+<text x="132" y="89" text-anchor="end" class="lbl">PR #100</text>
+<path d="M140,79 h322.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-322.0 z" class="s-pr" data-tip="gh-pr-100: 8 facts"/>
+<text x="474.0" y="89" class="val">8</text>
+<text x="132" y="113" text-anchor="end" class="lbl">PR #106</text>
+<path d="M140,103 h322.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-322.0 z" class="s-pr" data-tip="gh-pr-106: 8 facts"/>
+<text x="474.0" y="113" class="val">8</text>
+<text x="132" y="137" text-anchor="end" class="lbl">PR #94</text>
+<path d="M140,127 h322.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-322.0 z" class="s-pr" data-tip="gh-pr-94: 8 facts"/>
+<text x="474.0" y="137" class="val">8</text>
+<text x="132" y="161" text-anchor="end" class="lbl">PR #97</text>
+<path d="M140,151 h322.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-322.0 z" class="s-pr" data-tip="gh-pr-97: 8 facts"/>
+<text x="474.0" y="161" class="val">8</text>
+<text x="132" y="185" text-anchor="end" class="lbl">issue #101</text>
+<path d="M140,175 h281.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-281.0 z" class="s-issue" data-tip="gh-issue-101: 7 facts"/>
+<text x="433.0" y="185" class="val">7</text>
+<text x="132" y="209" text-anchor="end" class="lbl">issue #105</text>
+<path d="M140,199 h281.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-281.0 z" class="s-issue" data-tip="gh-issue-105: 7 facts"/>
+<text x="433.0" y="209" class="val">7</text>
+<text x="132" y="233" text-anchor="end" class="lbl">issue #111</text>
+<path d="M140,223 h281.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-281.0 z" class="s-issue" data-tip="gh-issue-111: 7 facts"/>
+<text x="433.0" y="233" class="val">7</text>
+<text x="132" y="257" text-anchor="end" class="lbl">PR #110</text>
+<path d="M140,247 h281.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-281.0 z" class="s-pr" data-tip="gh-pr-110: 7 facts"/>
+<text x="433.0" y="257" class="val">7</text>
+<text x="132" y="281" text-anchor="end" class="lbl">issue #107</text>
+<path d="M140,271 h240.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-240.0 z" class="s-issue" data-tip="gh-issue-107: 6 facts"/>
+<text x="392.0" y="281" class="val">6</text>
+<text x="132" y="305" text-anchor="end" class="lbl">issue #108</text>
+<path d="M140,295 h240.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-240.0 z" class="s-issue" data-tip="gh-issue-108: 6 facts"/>
+<text x="392.0" y="305" class="val">6</text>
+<text x="132" y="329" text-anchor="end" class="lbl">issue #109</text>
+<path d="M140,319 h240.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-240.0 z" class="s-issue" data-tip="gh-issue-109: 6 facts"/>
+<text x="392.0" y="329" class="val">6</text>
+<text x="132" y="353" text-anchor="end" class="lbl">issue #102</text>
+<path d="M140,343 h199.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-199.0 z" class="s-issue" data-tip="gh-issue-102: 5 facts"/>
+<text x="351.0" y="353" class="val">5</text>
+<text x="132" y="377" text-anchor="end" class="lbl">PR #104</text>
+<path d="M140,367 h199.0 a4,4 0 0 1 4,4 v4 a4,4 0 0 1 -4,4 h-199.0 z" class="s-pr" data-tip="gh-pr-104: 5 facts"/>
+<text x="351.0" y="377" class="val">5</text>
+</svg>
+
+<details><summary>data as a table</summary>
+<table><tr><th>contributor</th><th>issues</th><th>PRs</th></tr>
+<tr><td>Techkeyy</td><td>3</td><td>0</td></tr><tr><td>AshNicolus</td><td>0</td><td>3</td></tr><tr><td>areycruzer</td><td>2</td><td>0</td></tr><tr><td>aloktripathi1</td><td>1</td><td>1</td></tr><tr><td>Jennycruzy</td><td>1</td><td>0</td></tr><tr><td>Ansell-OK</td><td>1</td><td>0</td></tr><tr><td>tushar-hydradb</td><td>0</td><td>1</td></tr><tr><td>dependabot[bot]</td><td>0</td><td>1</td></tr><tr><td>aetosdios27</td><td>0</td><td>1</td></tr><tr><td>Agnik47</td><td>0</td><td>1</td></tr>
+</table>
+<table><tr><th>thread</th><th>facts</th></tr>
+<tr><td>gh-pr-99</td><td>10</td></tr><tr><td>gh-issue-98</td><td>9</td></tr><tr><td>gh-pr-103</td><td>9</td></tr><tr><td>gh-pr-100</td><td>8</td></tr><tr><td>gh-pr-106</td><td>8</td></tr><tr><td>gh-pr-94</td><td>8</td></tr><tr><td>gh-pr-97</td><td>8</td></tr><tr><td>gh-issue-101</td><td>7</td></tr><tr><td>gh-issue-105</td><td>7</td></tr><tr><td>gh-issue-111</td><td>7</td></tr><tr><td>gh-pr-110</td><td>7</td></tr><tr><td>gh-issue-107</td><td>6</td></tr><tr><td>gh-issue-108</td><td>6</td></tr><tr><td>gh-issue-109</td><td>6</td></tr><tr><td>gh-issue-102</td><td>5</td></tr><tr><td>gh-pr-104</td><td>5</td></tr>
+</table>
+</details>
+
+<div id="tip"></div>
+<script>
+const tip = document.getElementById('tip');
+document.querySelectorAll('[data-tip]').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    tip.textContent = el.dataset.tip;
+    tip.style.display = 'block';
+    tip.style.left = (e.clientX + 12) + 'px';
+    tip.style.top = (e.clientY - 30) + 'px';
+  });
+  el.addEventListener('mouseleave', () => tip.style.display = 'none');
+});
+</script>
+</div></body></html>

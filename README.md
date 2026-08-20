@@ -17,6 +17,10 @@ engram ask "was the RFC process PR merged?"
 engram ask "who reviewed PR #99 and what was the verdict?"
 ```
 
+A snapshot of what that memory holds (`scripts/memory_chart.py` regenerates it):
+
+![what engram remembers about hydra-db/hydradb](assets/hydradb-memory-light.png)
+
 ## Architecture
 
 ```mermaid
